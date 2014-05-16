@@ -4,13 +4,13 @@
 <dict>
 	<key>fileTypes</key>
 	<array>
+		<string>reb</string>
 		<string>r</string>
 		<string>r2</string>
 		<string>r3</string>
-		<string>reb</string>
 	</array>
 	<key>firstLineMatch</key>
-	<string>^\s*REBOL\s\[</string>
+	<string>^\s*(?i)(REBOL)\s\[</string>
 	<key>foldingStartMarker</key>
 	<string>^([^;]*[\[\{\(])+\s*(\;.*)?$</string>
 	<key>foldingStopMarker</key>
@@ -26,10 +26,6 @@
 		<dict>
 			<key>include</key>
 			<string>#type-literal</string>
-		</dict>
-		<dict>
-			<key>include</key>
-			<string>#logic</string>
 		</dict>
 		<dict>
 			<key>include</key>
@@ -154,7 +150,7 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>[01]{8}</string>
+					<string>([01]\s*){8}</string>
 					<key>name</key>
 					<string>string.binary.base2.rebol</string>
 				</dict>
@@ -169,7 +165,7 @@
 		<key>character</key>
 		<dict>
 			<key>match</key>
-			<string>#"(\^(\([0-9a-fA-F]{2}\)|.)|[^\^\"])"</string>
+			<string>#"(\^(\(([0-9a-fA-F]+|del)\)|.)|[^\^\"])"</string>
 			<key>name</key>
 			<string>string.character.rebol</string>
 		</dict>
@@ -196,7 +192,7 @@
 		<key>character-inline</key>
 		<dict>
 			<key>match</key>
-			<string>\^(\([0-9a-fA-F]{2}\)|.)</string>
+			<string>\^(\(([0-9a-fA-F]+|del)\)|.)</string>
 			<key>name</key>
 			<string>string.escaped.rebol</string>
 		</dict>
@@ -318,6 +314,13 @@
 				</dict>
 			</array>
 		</dict>
+		<key>comment-todo</key>
+		<dict>
+			<key>match</key>
+			<string>;@@.*?(?=\%&gt;|$)</string>
+			<key>name</key>
+			<string>comment.todo.rebol</string>
+		</dict>
 		<key>comments</key>
 		<dict>
 			<key>patterns</key>
@@ -325,6 +328,10 @@
 				<dict>
 					<key>include</key>
 					<string>#comment-docline</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comment-todo</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -349,12 +356,107 @@
 			<key>name</key>
 			<string>string.quoted.double.xml</string>
 		</dict>
-		<key>logic</key>
+		<key>function-definition</key>
 		<dict>
-			<key>match</key>
-			<string>#\[(true|false|none)]</string>
+			<key>begin</key>
+			<string>([A-Za-z=\!\?\*_\+][A-Za-z0-9=_\-\!\?\*\+\.]*):\s+(?i)(function|func|funct|routine)\s*(\[)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>support.variable.function.rebol</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.function</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>support.strong</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>]</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>support.strong</string>
+				</dict>
+			</dict>
 			<key>name</key>
-			<string>logic.rebol</string>
+			<string>function.definition</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#function-definition-block</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#strings</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#word-setword</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#word-datatype</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#word-refinement</string>
+				</dict>
+			</array>
+		</dict>
+		<key>function-definition-block</key>
+		<dict>
+			<key>begin</key>
+			<string>\[</string>
+			<key>end</key>
+			<string>]</string>
+			<key>name</key>
+			<string>function.definition.block</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#word-datatype</string>
+				</dict>
+			</array>
+		</dict>
+		<key>function-definition-does</key>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>support.variable.function.rebol</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.function</string>
+				</dict>
+			</dict>
+			<key>match</key>
+			<string>([A-Za-z=\!\?\*_\+][A-Za-z0-9=_\-\!\?\*\+\.]*):\s+(?i)(does|context)(?=\s*|\[)</string>
+			<key>name</key>
+			<string>function.definition.does</string>
 		</dict>
 		<key>parens</key>
 		<dict>
@@ -366,9 +468,9 @@
 		<key>rsp-tag</key>
 		<dict>
 			<key>begin</key>
-			<string>&lt;%={0,2} </string>
+			<string>&lt;%=</string>
 			<key>end</key>
-			<string> %&gt;</string>
+			<string>%&gt;</string>
 			<key>name</key>
 			<string>source.rebol</string>
 			<key>patterns</key>
@@ -398,7 +500,7 @@
 		<key>string-file</key>
 		<dict>
 			<key>match</key>
-			<string>%[^\s\n\[\]\(\)]*</string>
+			<string>%[^\s\n\[\]\(\)]+</string>
 			<key>name</key>
 			<string>string.file.rebol</string>
 		</dict>
@@ -678,6 +780,21 @@
 			<key>match</key>
 			<string>(?&lt;!\w|\.)([-+]?((\d+\.?\d*)|(\.\d+))((e|E)(\+|-)?\d+)?)(?=\W)</string>
 			<key>name</key>
+			<string>constant.numeric.rebol</string>
+		</dict>
+		<key>value-number-hex</key>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.rebol</string>
+				</dict>
+			</dict>
+			<key>match</key>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()([0-9A-F]+)h(?=\s|\)|\]|/|;|\"|{\[|\()</string>
+			<key>name</key>
 			<string>number.rebol</string>
 		</dict>
 		<key>value-pair</key>
@@ -707,14 +824,6 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#value-date</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#value-time</string>
-				</dict>
-				<dict>
-					<key>include</key>
 					<string>#value-tuple</string>
 				</dict>
 				<dict>
@@ -734,79 +843,72 @@
 		<key>word</key>
 		<dict>
 			<key>match</key>
-			<string>[A-Za-z=][A-Za-z0-9=_\-\!\?\*\+\.]*(/([A-Za-z=][A-Za-z0-9=_\-\!\?\*\+\.]*|\d+))*(?=$|\W)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()[A-Za-z_\*\?=_-]+[A-Za-z_0-9\*\?=_-]*(?=\s|\)|\]|/|;|\"|{)</string>
 			<key>name</key>
 			<string>word.rebol</string>
 		</dict>
 		<key>word-datatype</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\t|\n|\r|\[|\]|\)|\()[A-Za-z_0-9\-_]+\!(?=\s|\t|\n|\r|\)|\])</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()([A-Za-z_0-9\-_\*\?]+\!|as)(?=\s|\)|\])</string>
 			<key>name</key>
-			<string>keyword.datatype.rebol</string>
+			<string>support.type.rebol</string>
 		</dict>
 		<key>word-getword</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\t|\n|\r|\[|\]|\)|\():[A-Za-z_0-9\?\-_]+(?=\s|\t|\n|\r|\)|\])</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\():[A-Za-z_0-9\*\?=_-]+(?=\s|\)|\])</string>
 			<key>name</key>
-			<string>keyword.getword.rebol</string>
+			<string>support.variable.getword.rebol</string>
 		</dict>
 		<key>word-group1</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\t|\n|\r|\[|\]|\)|\()(native|alias|all|any|as-string|as-binary|bind|bound\?|case|catch|checksum|comment|debase|dehex|exclude|difference|disarm|either|else|enbase|foreach|forall|remove-each|form|free|get|get-env|if|in|intersect|loop|minimum-of|maximum-of|mold|new-line|new-line\?|not|now|prin|print|reduce|compose|construct|repeat|reverse|save|script\?|set|shift|switch|throw|to-hex|trace|try|type\?|union|unique|unless|unprotect|unset|until|use|value\?|while|compress|decompress|secure|open|close|read|read-io|write-io|write|update|query|wait|input\?|exp|log-10|log-2|log-e|square-root|cosine|sine|tangent|arccosine|arcsine|arctangent|protect|lowercase|uppercase|entab|detab|connected\?|browse|launch|stats|get-modes|set-modes|to-local-file|to-rebol-file|encloak|decloak|create-link|do-browser|bind\?|hide|draw|show|size-text|textinfo|offset-to-caret|caret-to-offset|local-request-file|rgb-to-hsv|hsv-to-rgb|crypt-strength\?|dh-make-key|dh-generate-key|dh-compute-key|dsa-make-key|dsa-generate-key|dsa-make-signature|dsa-verify-signature|rsa-make-key|rsa-generate-key|rsa-encrypt)(?=\s|\(|\[)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()(?i)(native|alias|all|any|as-string|as-binary|bind|bound\?|case|catch|checksum|comment|debase|dehex|exclude|difference|disarm|enbase|form|free|get|get-env|in|intersect|minimum-of|maximum-of|mold|new-line|new-line\?|not|now|prin|print|reduce|compose|construct|reverse|save|script\?|set|shift|throw|to-hex|trace|try|type\?|union|charset|unique|unprotect|unset|use|value\?|compress|decompress|secure|open|close|read|read-io|write-io|write|update|query|wait|input\?|exp|log-10|log-2|log-e|square-root|cosine|sine|tangent|arccosine|arcsine|arctangent|protect|lowercase|uppercase|entab|detab|connected\?|browse|launch|stats|get-modes|set-modes|to-local-file|to-rebol-file|encloak|decloak|create-link|do-browser|bind\?|hide|draw|show|size-text|textinfo|offset-to-caret|caret-to-offset|local-request-file|rgb-to-hsv|hsv-to-rgb|crypt-strength\?|dh-make-key|dh-generate-key|dh-compute-key|dsa-make-key|dsa-generate-key|dsa-make-signature|dsa-verify-signature|rsa-make-key|rsa-generate-key|rsa-encrypt)(?=\s|\(|\[|/|;|\"|{)</string>
 			<key>name</key>
 			<string>support.function.rebol</string>
 		</dict>
 		<key>word-group2</key>
 		<dict>
 			<key>match</key>
-			<string>\b(func|funct|function|context|does|has|routine)(?=\s|\(|\[)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()(?i)(if|either|unless|else|for|foreach|forall|remove-each|until|while|case|loop|repeat|switch)(?=\s|\(|\[|/|;|\"|{)</string>
 			<key>name</key>
-			<string>keyword.function.rebol</string>
+			<string>support.function.group2.rebol</string>
 		</dict>
 		<key>word-group3</key>
 		<dict>
 			<key>match</key>
-			<string>\b(insert|append|tail|head|back|repend)(?=\s|\(|\[)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()(?i)(insert|append|tail|head|back|repend)(?=\s|\(|\[|\)|\]|/|;|\"|{)</string>
 			<key>name</key>
 			<string>keyword.series.rebol</string>
 		</dict>
 		<key>word-group4</key>
 		<dict>
 			<key>match</key>
-			<string>(?i:\b(Off|False|None|On|True)\b)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()(?i)(off|false|none|on|true|yes|no|null)(?=\s|\(|\[|\)|\]|;|\"|{)</string>
 			<key>name</key>
 			<string>logic.rebol</string>
 		</dict>
 		<key>word-group5</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\t|\n|\r|\[|\]|\)|\()(halt|quit|exit|return|break|quit)(?=\s|\(|\[|/)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()(?i)(halt|quit|exit|return|break|quit)(?=\s|\(|\[|/|;|\"|{)</string>
 			<key>name</key>
 			<string>keyword.breaks.rebol</string>
 		</dict>
 		<key>word-litword</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\t|\n|\r|\[|\]|\)|\()'[A-Za-z_0-9]+(?=\s|\t|\n|\r|\)|\])</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()'[A-Za-z_0-9\*\?=_-]+(?=\s|\)|\])</string>
 			<key>name</key>
 			<string>keyword.litword.rebol</string>
 		</dict>
 		<key>word-operator</key>
 		<dict>
 			<key>match</key>
-			<string>(==|!=|&lt;=|&gt;=|&lt;&gt;|&lt;|&gt;|\b(and|or|xor)(\s|[\(|\[]))</string>
+			<string>(==|!=|&lt;=|&gt;=|&lt;&gt;|&lt;|&gt;|&gt;&gt;|&gt;&gt;&gt;|&lt;&lt;|\+|-|=|\*|%|/|\b(and|or|xor))(?=\s|\(|\[|\)|\]|/|;|\"|{)</string>
 			<key>name</key>
 			<string>keyword.operator.comparison</string>
-		</dict>
-		<key>word-question</key>
-		<dict>
-			<key>match</key>
-			<string>[^\?\s\n\[\]\(\/)]*\?</string>
-			<key>name</key>
-			<string>keyword.question.rebol</string>
 		</dict>
 		<key>word-refinement</key>
 		<dict>
@@ -820,7 +922,7 @@
 			<key>match</key>
 			<string>[^:\s\n\[\]\(\)]*:</string>
 			<key>name</key>
-			<string>keyword.setword.rebol</string>
+			<string>support.variable.setword.rebol</string>
 		</dict>
 		<key>words</key>
 		<dict>
@@ -828,6 +930,26 @@
 			<string>word.rebol</string>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>include</key>
+					<string>#value-number-hex</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#value-date</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#value-time</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#function-definition</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#function-definition-does</string>
+				</dict>
 				<dict>
 					<key>include</key>
 					<string>#word-refinement</string>
@@ -854,6 +976,10 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#word-group4</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#word-group1</string>
 				</dict>
 				<dict>
@@ -866,11 +992,11 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#word-group4</string>
+					<string>#word-group5</string>
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#word-group5</string>
+					<string>#word</string>
 				</dict>
 			</array>
 		</dict>

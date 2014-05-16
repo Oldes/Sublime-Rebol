@@ -1,15 +1,14 @@
 { "name": "REBOL",
   "scopeName": "source.rebol",
-  "fileTypes": ["r","r2","r3", "reb"],
+  "fileTypes": ["reb", "r", "r2", "r3"],
 
-  "firstLineMatch": "^\\s*REBOL\\s\\[",
+  "firstLineMatch": "^\\s*(?i)(REBOL)\\s\\[",
   "foldingStartMarker": "^([^;]*[\\[\\{\\(])+\\s*(\\;.*)?$",
   "foldingStopMarker": "^\\s*[\\]\\}\\)].*$",
 
   "patterns": [
   		{"include": "#comments"},
   		{"include": "#type-literal"},
-  		{"include": "#logic"},
   		{"include": "#strings"},
   		{"include": "#words"},
   		{"include": "#values"}
@@ -63,7 +62,7 @@
 		   },
 		   "patterns": [	      
 		       {  "name": "string.binary.base2.rebol",
-		          "match": "[01]{8}"
+		          "match": "([01]\\s*){8}"
 		       },
 		       {  "name": "invalid.illegal.rebol",
 		          "match": "."
@@ -77,7 +76,7 @@
 
   		"character": {
 			"name": "string.character.rebol",
-			"match": "#\"(\\^(\\([0-9a-fA-F]{2}\\)|.)|[^\\^\\\"])\""
+			"match": "#\"(\\^(\\(([0-9a-fA-F]+|del)\\)|.)|[^\\^\\\"])\""
 		},
 
 		"character-html": {
@@ -91,12 +90,17 @@
 
 		"character-inline": {
 			"name": "string.escaped.rebol",
-			"match": "\\^(\\([0-9a-fA-F]{2}\\)|.)"
+			"match": "\\^(\\(([0-9a-fA-F]+|del)\\)|.)"
 		},
 
 		"comment-docline": {
 		   "name": "comment.docline.rebol",
 		   "match": ";-.*?(?=\\%>|$)"
+		},
+
+		"comment-todo": {
+		   "name": "comment.todo.rebol",
+		   "match": ";@@.*?(?=\\%>|$)"
 		},
 
 		"comment-line": {
@@ -157,6 +161,7 @@
 		"comments": {
 			"patterns": [
 				{ "include": "#comment-docline" },
+				{ "include": "#comment-todo" },
 				{ "include": "#comment-line" },
 				{ "include": "#comment-multiline-string" },
 				{ "include": "#comment-multiline-block" }
@@ -174,14 +179,9 @@
 			"end": "\""
 		},
 
-		"logic": {
-			"name": "logic.rebol",
-			"match": "#\\[(true|false|none)]"
-		},
-
 		"rsp-tag": {
-			"begin": "<%={0,2} ",
-			"end": " %>",
+			"begin": "<%=",
+			"end": "%>",
 			"name": "source.rebol",
 			"patterns": [
 				{ "include": "source.rebol" }
@@ -195,7 +195,7 @@
 
 		"string-file": {
 			"name": "string.file.rebol",
-			"match": "%[^\\s\\n\\[\\]\\(\\)]*"
+			"match": "%[^\\s\\n\\[\\]\\(\\)]+"
 		},
 
 		"string-file-quoted": {
@@ -322,8 +322,16 @@
 		},
 
 		"value-number": {
-			"name": "number.rebol",
+			"name": "constant.numeric.rebol",
 			"match": "(?<!\\w|\\.)([-+]?((\\d+\\.?\\d*)|(\\.\\d+))((e|E)(\\+|-)?\\d+)?)(?=\\W)"
+		},
+
+		"value-number-hex": {
+			"name": "number.rebol",
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()([0-9A-F]+)h(?=\\s|\\)|\\]|/|;|\\\"|{\\[|\\()",
+			"captures": {
+				"1": {"name": "constant.numeric.rebol"}
+			}
 		},
 
 		"value-pair": {
@@ -343,8 +351,6 @@
 
 		"values": {
 			"patterns": [
-				{ "include": "#value-date" },
-				{ "include": "#value-time" },
 				{ "include": "#value-tuple" },
 				{ "include": "#value-number" },
 				{ "include": "#value-pair" },
@@ -359,7 +365,7 @@
 		
 		"word-operator": {
 			"name": "keyword.operator.comparison",
-			"match": "(==|!=|<=|>=|<>|<|>|\\b(and|or|xor)(\\s|[\\(|\\[]))"
+			"match": "(==|!=|<=|>=|<>|<|>|>>|>>>|<<|\\+|-|=|\\*|%|/|\\b(and|or|xor))(?=\\s|\\(|\\[|\\)|\\]|/|;|\\\"|{)"
 		},
 
 		"parens": {
@@ -368,74 +374,118 @@
 		},
 
 		"word-setword": {
-			"name": "keyword.setword.rebol",
+			"name": "support.variable.setword.rebol",
 			"match": "[^:\\s\\n\\[\\]\\(\\)]*:"
 		},
 
 		"word-getword": {
-			"name": "keyword.getword.rebol",
-			"match": "(?<=^|\\s|\\t|\\n|\\r|\\[|\\]|\\)|\\():[A-Za-z_0-9\\?\\-_]+(?=\\s|\\t|\\n|\\r|\\)|\\])"
-		},
-
-		"word-question": {
-			"name": "keyword.question.rebol",
-			"match": "[^\\?\\s\\n\\[\\]\\(\\/)]*\\?"
+			"name": "support.variable.getword.rebol",
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\():[A-Za-z_0-9\\*\\?=_-]+(?=\\s|\\)|\\])"
 		},
 
 		"word-litword": {
 			"name": "keyword.litword.rebol",
-			"match": "(?<=^|\\s|\\t|\\n|\\r|\\[|\\]|\\)|\\()'[A-Za-z_0-9]+(?=\\s|\\t|\\n|\\r|\\)|\\])"
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()'[A-Za-z_0-9\\*\\?=_-]+(?=\\s|\\)|\\])"
 		},
 
 		"word-datatype": {
-			"name": "keyword.datatype.rebol",
-			"match": "(?<=^|\\s|\\t|\\n|\\r|\\[|\\]|\\)|\\()[A-Za-z_0-9\\-_]+\\!(?=\\s|\\t|\\n|\\r|\\)|\\])"
+			"name": "support.type.rebol",
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()([A-Za-z_0-9\\-_\\*\\?]+\\!|as)(?=\\s|\\)|\\])"
 		},
 		
 		"word-group1": {
 			"name": "support.function.rebol",
-			"match": "(?<=^|\\s|\\t|\\n|\\r|\\[|\\]|\\)|\\()(native|alias|all|any|as-string|as-binary|bind|bound\\?|case|catch|checksum|comment|debase|dehex|exclude|difference|disarm|either|else|enbase|foreach|forall|remove-each|form|free|get|get-env|if|in|intersect|loop|minimum-of|maximum-of|mold|new-line|new-line\\?|not|now|prin|print|reduce|compose|construct|repeat|reverse|save|script\\?|set|shift|switch|throw|to-hex|trace|try|type\\?|union|unique|unless|unprotect|unset|until|use|value\\?|while|compress|decompress|secure|open|close|read|read-io|write-io|write|update|query|wait|input\\?|exp|log-10|log-2|log-e|square-root|cosine|sine|tangent|arccosine|arcsine|arctangent|protect|lowercase|uppercase|entab|detab|connected\\?|browse|launch|stats|get-modes|set-modes|to-local-file|to-rebol-file|encloak|decloak|create-link|do-browser|bind\\?|hide|draw|show|size-text|textinfo|offset-to-caret|caret-to-offset|local-request-file|rgb-to-hsv|hsv-to-rgb|crypt-strength\\?|dh-make-key|dh-generate-key|dh-compute-key|dsa-make-key|dsa-generate-key|dsa-make-signature|dsa-verify-signature|rsa-make-key|rsa-generate-key|rsa-encrypt)(?=\\s|\\(|\\[)"
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()(?i)(native|alias|all|any|as-string|as-binary|bind|bound\\?|case|catch|checksum|comment|debase|dehex|exclude|difference|disarm|enbase|form|free|get|get-env|in|intersect|minimum-of|maximum-of|mold|new-line|new-line\\?|not|now|prin|print|reduce|compose|construct|reverse|save|script\\?|set|shift|throw|to-hex|trace|try|type\\?|union|charset|unique|unprotect|unset|use|value\\?|compress|decompress|secure|open|close|read|read-io|write-io|write|update|query|wait|input\\?|exp|log-10|log-2|log-e|square-root|cosine|sine|tangent|arccosine|arcsine|arctangent|protect|lowercase|uppercase|entab|detab|connected\\?|browse|launch|stats|get-modes|set-modes|to-local-file|to-rebol-file|encloak|decloak|create-link|do-browser|bind\\?|hide|draw|show|size-text|textinfo|offset-to-caret|caret-to-offset|local-request-file|rgb-to-hsv|hsv-to-rgb|crypt-strength\\?|dh-make-key|dh-generate-key|dh-compute-key|dsa-make-key|dsa-generate-key|dsa-make-signature|dsa-verify-signature|rsa-make-key|rsa-generate-key|rsa-encrypt)(?=\\s|\\(|\\[|/|;|\\\"|{)"
 		},
 
 		"word-group2": {
-			"name": "keyword.function.rebol",
-			"match": "\\b(func|funct|function|context|does|has|routine)(?=\\s|\\(|\\[)"
+			"name": "support.function.group2.rebol",
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()(?i)(if|either|unless|else|for|foreach|forall|remove-each|until|while|case|loop|repeat|switch)(?=\\s|\\(|\\[|/|;|\\\"|{)"
 		},
 
 		"word-group3": {
 			"name": "keyword.series.rebol",
-			"match": "\\b(insert|append|tail|head|back|repend)(?=\\s|\\(|\\[)"
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()(?i)(insert|append|tail|head|back|repend)(?=\\s|\\(|\\[|\\)|\\]|/|;|\\\"|{)"
 		},
 		
 		"word-group4": {
 			"name": "logic.rebol",
-			"match": "(?i:\\b(Off|False|None|On|True)\\b)"
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()(?i)(off|false|none|on|true|yes|no|null)(?=\\s|\\(|\\[|\\)|\\]|;|\\\"|{)"
 		},
 
 		"word-group5": {
 			"name": "keyword.breaks.rebol",
-			"match": "(?<=^|\\s|\\t|\\n|\\r|\\[|\\]|\\)|\\()(halt|quit|exit|return|break|quit)(?=\\s|\\(|\\[|/)"
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()(?i)(halt|quit|exit|return|break|quit)(?=\\s|\\(|\\[|/|;|\\\"|{)"
 		},
 
+		//WORD is defined here so numbers are not detected inside words like:  foo-2-boo
 		"word": {
 			"name": "word.rebol",
-			"match": "[A-Za-z=][A-Za-z0-9=_\\-\\!\\?\\*\\+\\.]*(/([A-Za-z=][A-Za-z0-9=_\\-\\!\\?\\*\\+\\.]*|\\d+))*(?=$|\\W)"
+			"match": "(?<=^|\\s|\\[|\\]|\\)|\\()[A-Za-z_\\*\\?=_-]+[A-Za-z_0-9\\*\\?=_-]*(?=\\s|\\)|\\]|/|;|\\\"|{)"
+		},
+
+		"function-definition-block": {
+			"name": "function.definition.block",
+			"begin": "\\[",
+			"end": "]",
+			"patterns": [
+				{ "include": "#comments" },
+				{ "include": "#word-datatype" }
+			]
+		},
+
+		"function-definition": {
+			"name": "function.definition",
+			"begin": "([A-Za-z=\\!\\?\\*_\\+][A-Za-z0-9=_\\-\\!\\?\\*\\+\\.]*):\\s+(?i)(function|func|funct|routine)\\s*(\\[)",
+			"beginCaptures": {
+				"1": {"name": "support.variable.function.rebol"},
+				"2": {"name": "keyword.function"},
+				"3": {"name": "support.strong"}
+			},
+			"end": "]",
+			"endCaptures": {
+				"0": {"name": "support.strong"}
+			},
+			"patterns": [
+				{ "include": "#function-definition-block" },
+				{ "include": "#comments" },
+				{ "include": "#strings" },
+				{ "include": "#word-setword" },
+				{ "include": "#word-datatype" },
+				{ "include": "#word-refinement" }
+
+			]
+		},
+
+		"function-definition-does": {
+			"name": "function.definition.does",
+			"match": "([A-Za-z=\\!\\?\\*_\\+][A-Za-z0-9=_\\-\\!\\?\\*\\+\\.]*):\\s+(?i)(does|context)(?=\\s*|\\[)",
+			"captures": {
+				"1": {"name": "support.variable.function.rebol"},
+				"2": {"name": "keyword.function"}
+			}
 		},
 		
 		"words": {
 			"name": "word.rebol",
 			"patterns": [
+				{ "include": "#value-number-hex" },
+				{ "include": "#value-date" },
+				{ "include": "#value-time" },
+				{ "include": "#function-definition" },
+				{ "include": "#function-definition-does"},
 				{ "include": "#word-refinement" },
 				{ "include": "#word-operator" },
 				{ "include": "#word-getword" },
 				{ "include": "#word-setword" },
 				{ "include": "#word-refinement" },
 				{ "include": "#word-datatype" },
+				{ "include": "#word-group4" },
 				{ "include": "#word-group1" },
 				{ "include": "#word-group2" },
 				{ "include": "#word-group3" },
-				{ "include": "#word-group4" },
-				{ "include": "#word-group5" }
+				{ "include": "#word-group5" },
+				{ "include": "#word" }
 			]
 		}
   },
