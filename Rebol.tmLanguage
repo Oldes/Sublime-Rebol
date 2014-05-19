@@ -359,7 +359,7 @@
 		<key>function-definition</key>
 		<dict>
 			<key>begin</key>
-			<string>([A-Za-z=\!\?\*_\+][A-Za-z0-9=_\-\!\?\*\+\.]*):\s+(?i)(function|func|funct|routine)\s*(\[)</string>
+			<string>([A-Za-z=\!\?\*_\+][A-Za-z0-9=_\-\!\?\*\+\.]*):\s+(?i)(function|func|funct|routine|has)\s*(\[)</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -843,21 +843,21 @@
 		<key>word</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\[|\]|\)|\()[A-Za-z_\*\?=_-]+[A-Za-z_0-9\*\?=_-]*(?=\s|\)|\]|/|;|\"|{)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()[A-Za-z_\*\?=_-]+[A-Za-z_0-9=_\-\!\?\*\+\.~:']*(?=\s|\)|\]|/|;|\"|{)</string>
 			<key>name</key>
 			<string>word.rebol</string>
 		</dict>
 		<key>word-datatype</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\[|\]|\)|\()([A-Za-z_0-9\-_\*\?]+\!|as)(?=\s|\)|\])</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()([A-Za-z_0-9=_\-\?\*\+\.~:']+\!|as)(?=\s|\)|\])</string>
 			<key>name</key>
 			<string>support.type.rebol</string>
 		</dict>
 		<key>word-getword</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\[|\]|\)|\():[A-Za-z_0-9\*\?=_-]+(?=\s|\)|\])</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\():[A-Za-z_0-9=_\-\!\?\*\+\.~:']+(?=\s|\)|\])</string>
 			<key>name</key>
 			<string>support.variable.getword.rebol</string>
 		</dict>
@@ -899,7 +899,7 @@
 		<key>word-litword</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\[|\]|\)|\()'[A-Za-z_0-9\*\?=_-]+(?=\s|\)|\])</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()'[A-Za-z_0-9=_\-\!\?\*\+\.~:']+(?=\s|\)|\])</string>
 			<key>name</key>
 			<string>keyword.litword.rebol</string>
 		</dict>
