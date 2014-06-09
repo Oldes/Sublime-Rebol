@@ -33,11 +33,11 @@
 		</dict>
 		<dict>
 			<key>include</key>
-			<string>#words</string>
+			<string>#values</string>
 		</dict>
 		<dict>
 			<key>include</key>
-			<string>#values</string>
+			<string>#words</string>
 		</dict>
 	</array>
 	<key>repository</key>
@@ -771,7 +771,7 @@
 		<key>value-money</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;!\w)-?[a-zA-Z]*\$[0-9]+(\.[0-9]{2})?</string>
+			<string>(?&lt;!\w)-?[a-zA-Z]*\$\d+(\.\d*)?</string>
 			<key>name</key>
 			<string>number.money.rebol</string>
 		</dict>
@@ -838,6 +838,18 @@
 					<key>include</key>
 					<string>#value-money</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#value-number-hex</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#value-date</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#value-time</string>
+				</dict>
 			</array>
 		</dict>
 		<key>word</key>
@@ -850,7 +862,7 @@
 		<key>word-datatype</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\[|\]|\)|\()([A-Za-z_0-9=_\-\?\*\+\.~:']+\!|as)(?=\s|\)|\])</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()([A-Za-z_0-9=_\-\?\*\+\.~:']+\!|as|to)(?=\s|\)|\])</string>
 			<key>name</key>
 			<string>support.type.rebol</string>
 		</dict>
@@ -878,7 +890,7 @@
 		<key>word-group3</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;=^|\s|\[|\]|\)|\()(?i)(insert|append|tail|head|back|repend)(?=\s|\(|\[|\)|\]|/|;|\"|{)</string>
+			<string>(?&lt;=^|\s|\[|\]|\)|\()(?i)(at|insert|append|tail|head|back|repend|next)(?=\s|\(|\[|\)|\]|/|;|\"|{)</string>
 			<key>name</key>
 			<string>keyword.series.rebol</string>
 		</dict>
@@ -930,18 +942,6 @@
 			<string>word.rebol</string>
 			<key>patterns</key>
 			<array>
-				<dict>
-					<key>include</key>
-					<string>#value-number-hex</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#value-date</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#value-time</string>
-				</dict>
 				<dict>
 					<key>include</key>
 					<string>#function-definition</string>
