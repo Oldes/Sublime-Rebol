@@ -70,7 +70,13 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>[0-9a-fA-F]{2,2}</string>
+					<string>;.*?$</string>
+					<key>name</key>
+					<string>comment.line.rebol</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>[0-9a-fA-F\s]*</string>
 					<key>name</key>
 					<string>string.binary.base16.rebol</string>
 				</dict>
@@ -108,6 +114,12 @@
 			<string>binary.base64.rebol</string>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>match</key>
+					<string>;.*?$</string>
+					<key>name</key>
+					<string>comment.line.rebol</string>
+				</dict>
 				<dict>
 					<key>match</key>
 					<string>[0-9a-zA-Z+/=\s]*</string>
@@ -150,7 +162,13 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>([01]\s*){8}</string>
+					<string>;.*?$</string>
+					<key>name</key>
+					<string>comment.line.rebol</string>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>[01\s]*</string>
 					<key>name</key>
 					<string>string.binary.base2.rebol</string>
 				</dict>
@@ -800,7 +818,7 @@
 		<key>value-pair</key>
 		<dict>
 			<key>match</key>
-			<string>(?&lt;!\w)[-+]?[[:digit:]]+[x][[:digit:]]+</string>
+			<string>(?&lt;!\w)([-+]?((\d+\.?\d*)|(\.\d+))((e|E)(\+|-)?\d+)?)x([-+]?((\d+\.?\d*)|(\.\d+))((e|E)(\+|-)?\d+)?)</string>
 			<key>name</key>
 			<string>constant.pair.rebol</string>
 		</dict>
@@ -828,10 +846,6 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#value-number</string>
-				</dict>
-				<dict>
-					<key>include</key>
 					<string>#value-pair</string>
 				</dict>
 				<dict>
@@ -849,6 +863,10 @@
 				<dict>
 					<key>include</key>
 					<string>#value-time</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#value-number</string>
 				</dict>
 			</array>
 		</dict>

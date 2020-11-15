@@ -1,4 +1,4 @@
-{ "name": "REBOL",
+{ "name": "REBOL3",
   "scopeName": "source.rebol",
   "fileTypes": ["reb", "r", "r2", "r3"],
 
@@ -21,7 +21,10 @@
 		   "beginCaptures": {
 		       "0": { "name": "string.binary.prefix" }
 		   },
-		   "patterns": [	      
+		   "patterns": [
+		   	   {  "name": "comment.line.rebol",
+		          "match": ";.*?$"    
+		       },  
 		       {  "name": "string.binary.base64.rebol",
 		          "match": "[0-9a-zA-Z+/=\\s]*"
 		       },
@@ -40,9 +43,12 @@
 		   "beginCaptures": {
 		       "0": { "name": "string.binary.prefix" }
 		   },
-		   "patterns": [	      
+		   "patterns": [
+		       {  "name": "comment.line.rebol",
+		          "match": ";.*?$"    
+		       },        
 		       {  "name": "string.binary.base16.rebol",
-		          "match": "[0-9a-fA-F]{2,2}"
+		          "match": "[0-9a-fA-F\\s]*"
 		       },
 		       {  "name": "invalid.illegal.rebol",
 		          "match": "."
@@ -59,9 +65,12 @@
 		   "beginCaptures": {
 		       "0": { "name": "string.binary.prefix" }
 		   },
-		   "patterns": [	      
+		   "patterns": [
+		       {  "name": "comment.line.rebol",
+		          "match": ";.*?$"    
+		       },	      
 		       {  "name": "string.binary.base2.rebol",
-		          "match": "([01]\\s*){8}"
+		          "match": "[01\\s]*"
 		       },
 		       {  "name": "invalid.illegal.rebol",
 		          "match": "."
@@ -335,7 +344,7 @@
 
 		"value-pair": {
 			"name": "constant.pair.rebol",
-			"match": "(?<!\\w)[-+]?[[:digit:]]+[x][[:digit:]]+"
+			"match": "(?<!\\w)([-+]?((\\d+\\.?\\d*)|(\\.\\d+))((e|E)(\\+|-)?\\d+)?)x([-+]?((\\d+\\.?\\d*)|(\\.\\d+))((e|E)(\\+|-)?\\d+)?)"
 		},
 
 		"value-time": {
@@ -351,12 +360,12 @@
 		"values": {
 			"patterns": [
 				{ "include": "#value-tuple" },
-				{ "include": "#value-number" },
 				{ "include": "#value-pair" },
 				{ "include": "#value-money" },
 				{ "include": "#value-number-hex" },
 				{ "include": "#value-date" },
-				{ "include": "#value-time" }
+				{ "include": "#value-time" },
+				{ "include": "#value-number" }
 			]
 		},
 
