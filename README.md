@@ -1,7 +1,7 @@
-Sublime-Red
-===========
+Sublime-Rebol
+=============
 
-Sublime Text package for REBOL ([www.rebol.com](http://www.red-lang.org))
+Sublime Text package for REBOL ([www.rebol.com](http://www.rebol.com))
 
 As a theme is good to use the one which is part of the Red package here:
 https://raw.githubusercontent.com/Oldes/Sublime-Red/master/Red-REBOL.tmTheme
