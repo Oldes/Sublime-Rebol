@@ -1,14 +1,14 @@
 %YAML 1.2
 ---
 # http://www.sublimetext.com/docs/3/syntax.html
-name: REBOL
+name: Rebol
 file_extensions:
   - r
   - r2
   - r3
   - reb
-first_line_match: '^\s*(?i)(REBOL)\s\['
-scope: source.rebol3
+first_line_match: '^\s*(?i)(Rebol)\s\['
+scope: source.rebol
 contexts:
   main:
     - include: comments

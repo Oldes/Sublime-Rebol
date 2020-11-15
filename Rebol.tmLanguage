@@ -10,13 +10,13 @@
 		<string>r3</string>
 	</array>
 	<key>firstLineMatch</key>
-	<string>^\s*(?i)(REBOL)\s\[</string>
+	<string>^\s*(?i)(Rebol)\s\[</string>
 	<key>foldingStartMarker</key>
 	<string>^([^;]*[\[\{\(])+\s*(\;.*)?$</string>
 	<key>foldingStopMarker</key>
 	<string>^\s*[\]\}\)].*$</string>
 	<key>name</key>
-	<string>REBOL</string>
+	<string>Rebol</string>
 	<key>patterns</key>
 	<array>
 		<dict>
