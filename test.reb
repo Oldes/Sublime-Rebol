@@ -11,7 +11,75 @@ REBOL [
 
 true false on off
 
-10:00am
+myfunc: does [
+	foo: 1
+	noo: 2
+]
+my-func: does []
+
+
+
+;-- time!
+ 1:00
+ 1:00
+ 1:00:00
+ 1:00:00.01
+ 1:00:00,02
++1:00
++1:00:00
++1:00:00.01
++1:00:00,02
+ 1:00am
+ 1:00:00am
+ 1:00:00.01am
+ 1:00:00,02am
++1:00am
++1:00:00am
++1:00:00.01am
++1:00:00,02am
+ 10:0
+ 10:0
+ 10:0:00
+ 10:0:00.01
+ 10:0:00,02
++10:0
++10:0:00
++10:0:00.01
++10:0:00,02
+ 10:0am
+ 10:0:00am
+ 10:0:00.01am
+ 10:0:00,02am
++10:0am
++10:0:00am
++10:0:00.01am
++10:0:00,02am
+ 10:00
+ 10:00
+ 10:00:00
+ 10:00:00.01
+ 10:00:00,02
++10:00
++10:00:00
++10:00:00.01
++10:00:00,02
+ 10:00am
+ 10:00:00am
+ 10:00:00.01am
+ 10:00:00,02am
++10:00am
++10:00:00am
++10:00:00.01am
++10:00:00,02am
+
+;-- decimal
+1.2
+1.#inf
++1.#inf
+-1.#INF
+1.#nan
++1.#NaN
+0.#inf ; invalid decimal
 
 ;-- pair!
 2x2
@@ -19,6 +87,7 @@ true false on off
 0.5x0
 2.2x3.4
 2e2x1
+1.#infx1.#inf
 
 0x ;not valid pair!
 
@@ -37,6 +106,7 @@ EUR$222
 
 "a;a"
 
+
 ;-- issue!
 #foo
 #a##
@@ -47,21 +117,18 @@ EUR$222
 ;-- char!
 #"a"
 #"cxxx"      ;@@ should be invalid result!
-#"^xxx"
+#"^xxx"      ;@@ also invalid char!
 #"^()"
 #"^@"
 #"^L"
 #"^(0)"
 #"^(del)"
-#"aa"
 
-
-;-- decimal
-1.2
-
-;-- pair!
-10x10
-1.2x3.2
+;-- datatype!
+ integer!
+[integer! string! any-word!]
+[]integer!
+integer![]
 
 ;-- email!
 foo@
@@ -69,21 +136,27 @@ foo@gmail.com
 
 ;-- ref!
 @name
-@       ; empty ref!
+@       ; empty ref! is valid
 
 ;-- tag!
-<tag>
+<tag></tag><tag/>
 <tag id='a' foo="b">
+<---> ;<-- this is word! in Red, not a tag!
 
 ;-- url!
-http://foo:80/
-foo:somehing
+http://user:pass@host:80/path?query#tag
+scheme:/
+scheme://
+scheme:host
+mailto:user@foo.com
+aa:;<-- should not be detected as url
 
 ;-- file!
 %foo/boo
 %/c/Windows/
 %"with spaces"
 %"aa^"bb"
+%aa%20bb   ;@@TODO: same like %"aa bb"
 
 ;-- string!
 "aa^"bb"
@@ -98,6 +171,9 @@ foo:somehing
 multiline
 string
 }
+
+"^[[1;32mHello^[[0;m" ;@@ TODO: ansi escape sequences
+"^[c" 
 
 ;-- binary!
 #{}
@@ -115,9 +191,6 @@ string
  00 00 11
 }
 
-"^[[0;m"
-
-
 ;-- comments
 comment "something"
 comment {}
@@ -134,6 +207,8 @@ comment
 
 [comment]
 
+/
+
 
 fu: function ["aa"][
 	return 1
@@ -148,6 +223,7 @@ non:  ; this is ok
 ;-- docline comment
 ;@@ todo comment
 
+'aaa'
 
 
 1foo:

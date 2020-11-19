@@ -1,0 +1,12 @@
+[
+	// Disable apostrophe auto-pairing
+	{
+		"keys": ["'"],
+		"command": "insert_snippet",
+		"args": {"contents": "'"},
+		"context": [
+			{"key": "selector", "operator": "equal", "operand": "source.rebol"},
+			{"key": "selector", "operator": "not_equal", "operand": "source.rebol entity.tag"}
+		]
+	}
+]
