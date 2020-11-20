@@ -24,23 +24,26 @@ variables:
   lit_word_start_chars: ^[\d\'\:@]   #awoid: '2nd ''word ':word '@ref
   lit_word_chars: '[{{lit_word_start_chars}}]{{any_word_chars}}'
   refinement_chars: '{{any_word_chars}}'
+  word_boundary: (?![^{{non_ident_chars}}])
 
 first_line_match: '^\s*(?i)(Rebol)\s\['
 scope: source.rebol
 contexts:
   prototype:
-    - include: match-comment
+    - include: match-comment-lines
 
   main:
     - include: match-literals
     - include: match-constants
+    - include: match-comment
     - include: match-idents
 
    # - include: type-literal
    # - include: strings
    # - include: values
    # - include: words
-   # - include: match-punctuation
+
+    - include: match-punctuation
 
   match-literals:
     - include: match-time
@@ -51,10 +54,9 @@ contexts:
     - include: match-tag
     - include: match-lit-word
     - include: match-refinement
-    - include: match-email        # must be after lit-word! and refinement!
-    - include: match-any-string
     - include: match-char
-    - include: match-issue       # in Rebol #foo@some is email!, in Red issue! and ref! (so far)
+    - include: match-hashtag       # in Rebol #foo@some is email!, in Red issue! and ref! (so far)
+    - include: match-any-string
     - include: match-number
 
   match-any-string:
@@ -62,19 +64,23 @@ contexts:
     - include: match-binary
     - include: match-string
     - include: match-url
+    - include: match-email        # must be after lit-word! and refinement!
     #- include: match-ref        # ref! looks like @name, currently substituted with email!
 
   match-number:
     - include: match-hex-integers
     - match: '{{inf_or_nan}}'
       scope: constant.numeric.rebol
+    - match: '[+-]?\d+\.(#)'
+      scope: invalid.rebol
+      captures:
+        1: invalid.illegal.rebol
     - match: '[+-]?\d+(?:(\.)\d+)?(?:(([Ee])(([+-])?\d+)))?'
       scope: constant.numeric.rebol
       captures:
         1: punctuation.separator.decimal.rebol
         2: constant.numeric.exponent.rebol
         3: punctuation.separator.exponent.rebol
-
 
   match-hex-integers:
     #Note: hex integers are so far Red only (and probably will be replaced)
@@ -108,15 +114,15 @@ contexts:
         )
       scope: constant.numeric.date.rebol
       captures:
-        1: punctuation.separator.time.rebol
-        2: punctuation.separator.time.rebol
-        3: punctuation.separator.time.rebol
-        4: punctuation.separator.time.rebol
-        5: punctuation.separator.time.rebol
-        6: punctuation.separator.time.rebol
-        7: punctuation.separator.time.rebol
-        8: punctuation.separator.time.rebol
-        9: storage.type.ampm.rebol
+        1:  punctuation.separator.time.rebol
+        2:  punctuation.separator.time.rebol
+        3:  punctuation.separator.time.rebol
+        4:  punctuation.separator.time.rebol
+        5:  punctuation.separator.time.rebol
+        6:  punctuation.separator.time.rebol
+        7:  punctuation.separator.time.rebol
+        8:  punctuation.separator.time.rebol
+        9:  storage.type.ampm.rebol
         10: punctuation.separator.time.rebol
         11: punctuation.separator.time.rebol
 
@@ -190,7 +196,7 @@ contexts:
         2: punctuation.definition.string.begin.rebol
       push:
         - meta_scope: string.filename.rebol
-        - include: pop-strings-double
+        - include: pop-string-double
     - match: (\%)[^\s\[\](){};@%]*
       scope: string.filename.rebol
       captures:
@@ -221,16 +227,43 @@ contexts:
         0: punctuation.definition.entity.html
         2: punctuation.definition.entity.html
 
-  # TODO: current version is too permissive!
-  match-escaped-characters:
-    - match: '\^(\(([0-9a-fA-F]+|del)\)|.)'
-      scope: string.escaped.rebol
-
-  match-issue:
+  match-hashtag:
+    - match: (?:\#{)
+      captures:
+        0: string.binary.prefix
+      push: pop-binary-base16
+    - match: (?:\#\()
+      captures:
+        0: meta.type.map.begin.rebol
+      push: pop-type-map
+    - match: (?:\#\[(?![\]]))
+      captures:
+        0: constant.other.construct.begin.rebol
+        #1: storage.type.construct.rebol
+      push: pop-construct
+    - match: (\#)(?![^{{non_ident_chars}}@])
+      scope: invalid.rebol
+      captures:
+        1: invalid.illegal.rebol
     - match: (\#)[\w#-]+
       scope: string.issue.rebol
       captures:
         1: storage.type.issue.rebol
+
+  pop-construct:
+    - meta_scope: constant.other.construct.rebol
+    - match: ']'
+      scope: constant.other.construct.end.rebol
+      pop: true
+    - include: main
+
+  pop-type-map:
+    - meta_scope: meta.type.map.rebol
+    - match: '\)'
+      scope: meta.type.map.end.rebol
+      pop: true
+    - include: main
+
 
   # TODO: support ANSI escape sequences.
   match-string:
@@ -240,36 +273,39 @@ contexts:
   match-string-double:
     - match: '"'
       scope: punctuation.definition.string.begin.rebol
-      push: pop-strings-double
+      push: pop-string-double
 
-  pop-char:
+  match-string-escaped-char:
+    - match: '\^\((\h{0,4}|null|line|tab|page|esc|back|del)\)'
+      scope: constant.character.escape.rebol
+    - match: \^(?![\(])[[:ascii:]]
+      scope: constant.character.escape.rebol
+    - match: \^(.)
+      captures:
+        0: invalid.rebol
+        1: invalid.illegal.rebol
+
+  pop-string-double:
     - meta_include_prototype: false
+    - meta_scope: string.quoted.double.rebol
     - match: '"'
       scope: punctuation.definition.string.end.rebol
       pop: true
-    - match: \^\([^)]*\)
-      scope: constant.character.escape.rebol
-    - match: \^.
-      scope: constant.character.escape.rebol
-
-  pop-strings-double:
-    - meta_include_prototype: false
-    - meta_scope: string.quoted.double.rebol
-    - include: pop-char
+    - include: match-string-escaped-char
 
   match-string-braces:
     - match: '{'
       scope: punctuation.definition.string.begin.rebol
-      push: pop-strings-braces
+      push: pop-string-braces
 
-  pop-strings-braces:
+  pop-string-braces:
     - meta_include_prototype: false
     - meta_scope: string.quoted.double.rebol
     - match: '}'
       scope: punctuation.definition.string.end.rebol
       pop: true
     #- include: rsp-tag
-    - include: match-escaped-characters
+    - include: match-string-escaped-char
     - include: match-html-characters
     - include: match-string-braces
 
@@ -281,28 +317,17 @@ contexts:
          6: storage.type.numeric.pair.rebol
 
   match-binary:
-    - include: match-binary-base-two
-    - include: match-binary-base-sixteen
-    - include: match-binary-base-sixtyfour
+    - include: match-binary-base2
+    - include: match-binary-base16
+    - include: match-binary-base64
 
-  match-binary-base-sixteen:
+  match-binary-base16:
     - match: '(16)?#\{'
       captures:
         0: string.binary.prefix
-      push:
-        - meta_scope: binary.base16.rebol
-        - match: '\}'
-          captures:
-            0: string.binary.prefix
-          pop: true
-        - match: ';.*$'
-          scope: comment.line.rebol
-        - match: '[0-9a-fA-F\s]*'
-          scope: string.binary.base16.rebol
-        - match: .
-          scope: invalid.illegal.rebol
+      push: pop-binary-base16
 
-  match-binary-base-sixtyfour:
+  match-binary-base64:
     - match: '64#\{'
       captures:
         0: string.binary.prefix
@@ -319,7 +344,7 @@ contexts:
         - match: .
           scope: invalid.illegal.rebol
 
-  match-binary-base-two:
+  match-binary-base2:
     - match: '2#\{'
       captures:
         0: string.binary.prefix
@@ -336,11 +361,24 @@ contexts:
         - match: .
           scope: invalid.illegal.rebol
 
-  match-comment:
+  pop-binary-base16:
+    - meta_scope: binary.base16.rebol
+    - match: '\}'
+      captures:
+        0: string.binary.prefix
+      pop: true
+    - match: ';.*$'
+      scope: comment.line.rebol
+    - match: '[0-9a-fA-F\s]*'
+      scope: string.binary.base16.rebol
+    - match: .
+      scope: invalid.illegal.rebol
+
+  match-comment-lines:
     - include: match-comment-docline
     - include: match-comment-todo
     - include: match-comment-line
-    - include: match-comment-block
+    #- include: match-comment-block
     #- include: comment-multiline-block
 
   match-comment-docline:
@@ -361,16 +399,74 @@ contexts:
       captures:
         1: punctuation.definition.comment.begin.rebol
 
-  comment-multiline-block:
   #(?![^{{non_ident_chars}}])
-    - match: '(comment)([[^{{delimiters}}]|\s]*)(\[)'
+  match-comment:
+    - match: '(comment){{word_boundary}}(?![\)\]\}])(\s+(quote))?\s*'   #(?![^ #([[^{{delimiters}}]|\s]*)(\[)'
+      scope: comment.block.rebol
+      push:
+        - pop-comment-value
+        - pop-before-nonblank
+
+  pop-comment-value:
+    - match: (#)?\[
+      scope: comment.value.block.rebol
+      set: pop-comment-value-block-tail
+    - match: \{
+      scope: comment.value.string.rebol
+      set: pop-comment-value-string-multiline-tail
+    - match: \"
+      scope: comment.value.string.rebol
+      set: pop-comment-value-string-line-tail
+    - match: \(
+      scope: comment.value.paren.rebol
+      set: pop-comment-value-paren-tail
+    - match: ''
+      pop: true
+
+
+  pop-comment-value-block-tail:
+    - meta_scope: comment.value.block.rebol
+    - match: \]
+      pop: true
+    - match: \[
+      push: pop-comment-value-block-tail
+
+  pop-comment-value-string-multiline-tail:
+    - meta_scope: comment.value.string.rebol
+    - match: \}
+      pop: true
+    - match: \^\}
+    - match: \{
+      push: pop-comment-value-string-multiline-tail
+
+  pop-comment-value-string-line-tail:
+    - meta_scope: comment.value.string.rebol
+    - match: \"
+      pop: true
+    - match: \^\"
+    - match: \"
+      push: pop-comment-value-string-line-tail
+
+  pop-comment-value-paren-tail:
+    - meta_scope: comment.value.paren.rebol
+    - match: \)
+      pop: true
+    - match: \(
+      push: pop-comment-value-paren-tail
+
+  match-comment-string:
+    - match: '"'
       push:
         - meta_scope: comment.multiline.rebol
-        - match: '\]'
+        - match: '"'
           pop: true
-        - include: comment-multiline-block-string
-        - include: comment-multiline-string-nested
-        - include: comment-multiline-block-nested
+        - match: \^.
+
+  pop-multiline-block:
+    - meta_scope: comment.multiline.rebol
+    - match: '\]'
+      pop: true
+    - include: main
 
   comment-multiline-block-nested:
     - match: '\['
@@ -382,13 +478,7 @@ contexts:
         - include: comment-multiline-string-nested
         - include: comment-multiline-block-nested
 
-  comment-multiline-block-string:
-    - match: '"'
-      push:
-        - meta_scope: comment.multiline.rebol
-        - match: '"'
-          pop: true
-        - match: \^.
+
 
   comment-multiline-string:
     - match: 'comment\s*\{'
@@ -398,6 +488,15 @@ contexts:
           pop: true
         - match: \^.
         - include: comment-multiline-string-nested
+
+#  comment-multiline-string:
+#    - match: 'comment\s*\{'
+#      push:
+#        - meta_scope: comment.multiline.rebol
+#        - match: '\}'
+#          pop: true
+#        - match: \^.
+#        - include: comment-multiline-string-nested
 
   comment-multiline-string-nested:
     - match: '\{'
@@ -420,7 +519,7 @@ contexts:
       pop: true
 
   match-constants:
-    - match: \b(?:true|false|none)\b
+    - match: \b(?:true|false|none)(?![^{{non_ident_chars}}])
       scope: constant.language.rebol
 
   match-idents:
@@ -429,11 +528,22 @@ contexts:
     - include: match-set-word
     - include: match-get-word
     - include: match-ident-type
+    - include: match-ident-query
     - include: match-ident-other
 
   match-ident-type:
-    - match: '{{ident}}(!)'
-      scope: storage.type.rebol
+    - match: (to)\s+{{ident}}(!){{word_boundary}}
+      scope: storage.type.datatype.rebol
+      captures:
+        2: storage.type.punctuation.rebol
+    - match: '{{ident}}(!){{word_boundary}}'
+      scope: storage.type.datatype.rebol
+      captures:
+        1: storage.type.punctuation.rebol
+
+  match-ident-query:
+    - match: '{{ident}}(\?){{word_boundary}}'
+      scope: word.query.rebol
       captures:
         1: storage.type.punctuation.rebol
 
@@ -451,18 +561,19 @@ contexts:
 #        - pop-block
 #        - pop-params
 #
-#  match-decl-function:
-#    - match: ({{ident}})(:)\s*(function)(?![^{{non_ident_chars}}])
-#      captures:
-#        1: entity.name.function.rebol
-#        2: keyword.operator.assignment.rebol
-#        3: storage.type.function.rebol
-#      push:
-#        - pop-block
-#        - pop-locals
-#        - pop-params
+  match-decl-function:
+    - match: ({{ident}})(:)\s*(function|funct|func|does|module|closure|native|action)(?![^{{non_ident_chars}}])
+      captures:
+        1: entity.name.function.rebol
+        2: keyword.operator.assignment.rebol
+        3: storage.type.function.rebol
+      #push:
+      #  - pop-block
+      #  - pop-locals
+      #  - pop-params
 
   match-set-word:
+    - include: match-decl-function
     - match: '({{ident}})(:)'
       captures:
         1: entity.name.word.set.rebol
@@ -507,7 +618,7 @@ contexts:
       scope: punctuation.section.block.end.rebol invalid.illegal.rebol
 
   pop-block:
-    - match: \[
+    - match: \s*\[
       scope: punctuation.section.block.begin.rebol
       set: pop-block-tail
     - include: pop-before-nonblank

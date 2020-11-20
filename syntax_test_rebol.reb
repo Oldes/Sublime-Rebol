@@ -145,6 +145,30 @@
 ;these should not be recognized as valid numbers:
 0h Ah AAAAAAAAAAh aah
 
+  " ^(0) ^(00) ^(000) invalid:^(0000a)"
+//^ string.quoted.double.rebol punctuation.definition.string.begin.rebol
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.rebol
+//                       
+
+;----------------------------------------------------------------
+;-- binary!                                                      
+
+  #{F00D}
+//^^ binary.base16.rebol string.binary.prefix
+//  ^^^^ binary.base16.rebol string.binary.base16.rebol
+//      ^ binary.base16.rebol string.binary.prefix
+
+  16#{F00D}
+//^^^^ binary.base16.rebol string.binary.prefix
+
+  64#{8A0=}
+//^^^^ binary.base64.rebol string.binary.prefix
+//    ^^^^ binary.base64.rebol string.binary.base64.rebol
+
+  2#{0000 1100}
+//^^^ binary.base2.rebol string.binary.prefix
+//   ^^^^^^^^^ binary.base2.rebol string.binary.base2.rebol
+
 ;----------------------------------------------------------------
 ;-- tag!                                                         
   <tag>
@@ -212,12 +236,12 @@ true: false: none:
 ;----------------------------------------------------------------
 ;-- function!                                                    
 
- 
  foo: function [
     "Some description"
     argument [any-value!] "description"
     /refinement
-     value [string!] "description" ;comment
+     value [string!] "description"
+     ;comment
  ][
     ;function body
     if refinement [return value]
