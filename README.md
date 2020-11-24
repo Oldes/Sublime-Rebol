@@ -5,6 +5,8 @@ Sublime-Rebol
 
 It's recommened to use it with included [Rebol.sublime-color-scheme](Rebol.sublime-color-scheme).
 
+<img src="https://github.com/Oldes/media/raw/master/Rebol-Sublime-syntax-example.png" alt="colorized code example" width=50%/>
+
 # Installation
 
 Install using the [SublimeText PackageControl](https://sublime.wbond.net). Otherwise you can also Download/Clone the package and put it in your Packages-directory.
