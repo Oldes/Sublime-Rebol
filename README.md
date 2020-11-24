@@ -18,7 +18,7 @@ It's recommened to use it with included [Rebol.sublime-color-scheme](Rebol.subli
 ## or Manual Installation
 
 1. Download the desired **REBOL** package.
-2. Browse Packages from the Command Palette (Ctrl+Shift+P on Windows/Linux, ⇧⌘P on iOS)
+2. Browse Packages from the Command Palette (Ctrl+Shift+P on Windows/Linux, ⇧⌘P on Mac)
 3. Copy the **REBOL** packgage folder to `Packages/`.
 
 
