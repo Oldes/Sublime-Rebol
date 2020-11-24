@@ -28,8 +28,10 @@ comment 1
 
 value
 
-a: func [
+my-ctx: context [
+	f1: does []
 ]
+
 myfunc: does [
 	foo: 1
 	noo: 2
@@ -304,7 +306,9 @@ a/:a:
 all{}
 {}all
 
+prin now
 print now
+printf now
 
 0e-0 0E-0 0.0e-0 0.0E-0 123.456e-789
 

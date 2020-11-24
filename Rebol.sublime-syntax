@@ -25,6 +25,10 @@ variables:
   lit_word_chars: '[{{lit_word_start_chars}}]{{any_word_chars}}'
   refinement_chars: '{{any_word_chars}}'
   word_boundary: (?![^{{non_ident_chars}}])
+  words_control_conditional: (if|either|unless|case|switch)
+  words_control_loop: (foreach|forall|forskip|for|until|while)
+  words_control_flow: (break|return|exit|quit|halt|continue)
+  words_other_output: (prin(tf?)?|probe|\?\?|\?)
 
 first_line_match: '^\s*(?i)(Rebol|Red)\s\['
 scope: source.rebol
@@ -462,6 +466,7 @@ contexts:
       captures:
         2: invalid.illegal.rebol
     - include: match-decl-function
+    - include: match-decl-object
     - match: '({{ident}})(:){{word_boundary}}'
       captures:
         1: entity.name.word.set.rebol
@@ -490,25 +495,42 @@ contexts:
         2: entity.name.word.refinement.rebol
 
   match-keywords:
-    - match: '(?i)(if|either|unless|case|switch){{word_boundary}}'
+    - match: '(?i){{words_control_conditional}}{{word_boundary}}'
       scope: keyword.control.conditional.rebol
-    - match: '(?i)(foreach|forall|forskip|for|until|while){{word_boundary}}'
+    - match: '(?i){{words_control_loop}}{{word_boundary}}'
       scope: keyword.control.loop.rebol
-    - match: '(?i)(break|return|exit|quit|halt|continue){{word_boundary}}'
+    - match: '(?i){{words_control_flow}}{{word_boundary}}'
       scope: keyword.control.flow.rebol
-    - match: '(?i)(print|prin|probe|\?\?|\?){{word_boundary}}'
+    - match: '(?i){{words_other_output}}{{word_boundary}}'
       scope: keyword.other.output.rebol
     - match: '(?i)(==|!=|<=|>=|<>|<|>|=){{word_boundary}}'
       scope: keyword.operator.comparison.rebol
     - match: '(?i)(all|any|not){{word_boundary}}'
       scope: keyword.operator.logical.rebol
-    - match: '(?i)(ui8(le|be|bytes)?|ui16(le|be|bytes)?|ui24(le|be|bytes)?|ui32(le|be|bytes)?|ui64(le|be|bytes)?|si8(le|be|bytes)?|si16(le|be|bytes)?|si24(le|be|bytes)?|si32(le|be|bytes)?|si64(le|be|bytes)?){{word_boundary}}'
-      scope: storage.type.datatype.bincode.rebol
-    - match: '(BIT|SB|UB|INDEX|FIXED8|BYTES){{word_boundary}}'
-      scope: storage.type.datatype.bincode.rebol
     - match: '(\+\+|--){{word_boundary}}'
       scope: keyword.operator.assignment.augmented.rebol
+    - include: match-keyword-bincode
     - include: match-keyword-tests
+
+  # Binary dialect (bincode) keywords:
+  match-keyword-bincode:
+    - match: '(?i)((u|s)i8(le|be|(le|be)?bytes)?|(u|s)i16(le|be|(le|be)?bytes)?|(u|s)i24(le|be|(le|be)?bytes)?|(u|s)i32(le|be|(le|be)?bytes)?|(u|s)i64(le|be|(le|be)?bytes|EncodedU32)?){{word_boundary}}'
+      scope: storage.type.datatype.bincode.integers.rebol
+    - match: '(?i)(float(16)?|double|fixed(8|16)){{word_boundary}}'
+      scope: storage.type.datatype.bincode.decimals.rebol
+    # words bellow are case sensitive by design (not to colorize any such a word if it's not fully uppercase)
+    - match: '(BITSET(8|16|32)|BIT|(S|U|F)B){{word_boundary}}'
+      scope: storage.type.datatype.bincode.bits.rebol
+    - match: '(INDEX(?i)(z)?||LENGTH\?){{word_boundary}}'
+      scope: storage.type.datatype.bincode.index-length.rebol
+    - match: '(UNIXTIME-NOW(-LE|-BE)?|MSDOS-(TIME|DATETIME|DATE)){{word_boundary}}'
+      scope: storage.type.datatype.bincode.rebol
+    - match: '((STRING-|OCTAL-)?BYTES){{word_boundary}}'
+      scope: storage.type.datatype.bincode.bytes.rebol
+    - match: 'TUPLE(3|4){{word_boundary}}'
+      scope: storage.type.datatype.bincode.typle.rebol
+    - match: '(SKIP(BITS)?|ALIGN|AT(?i)(z)?){{word_boundary}}'
+      scope: storage.type.datatype.bincode.rebol
 
   # these are special function names used in unit tests
   match-keyword-tests:
@@ -553,6 +575,13 @@ contexts:
       #  - pop-block
       #  - pop-locals
       #  - pop-params
+  match-decl-object:
+    - match: ({{ident}})(:)\s*(object|context)(?![^{{non_ident_chars}}])
+      captures:
+        1: entity.name.class.rebol
+        2: keyword.operator.assignment.rebol
+        3: storage.type.class.rebol
+
 
   match-punctuation:
     - include: match-slash
