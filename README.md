@@ -1,10 +1,9 @@
 Sublime-Rebol
 =============
 
-Sublime Text package for REBOL ([www.rebol.com](http://www.rebol.com))
+**Sublime Text** package for REBOL ([www.rebol.com](http://www.rebol.com))
 
-As a theme is good to use the one which is part of the Red package here:
-https://raw.githubusercontent.com/Oldes/Sublime-Red/master/Red-REBOL.tmTheme
+It's recommened to use it with included [Rebol.sublime-color-scheme](Rebol.sublime-color-scheme).
 
 # Installation
 
@@ -12,4 +11,5 @@ Install using the [SublimeText PackageControl](https://sublime.wbond.net). Other
 
 # Credits
 
-The syntax rule is based on [RG-Chris TextMate Bundle](http://www.ross-gill.com/page/TextMate_and_REBOL)
+* The old [.tmLanguage](Rebol.tmLanguage) syntax file is based on [RG-Chris TextMate Bundle](http://www.ross-gill.com/page/TextMate_and_REBOL)
+* The new [.sublime-syntax](Rebol.sublime-syntax) version was made based on [Nelo Mitranim's work](https://github.com/mitranim/sublime-rebol).
