@@ -30,6 +30,8 @@ value
 
 my-ctx: context [
 	f1: does []
+	o1: construct [a: 1]
+	o2: construct/with [b: now] o1
 ]
 
 myfunc: does [

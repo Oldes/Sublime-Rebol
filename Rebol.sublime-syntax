@@ -29,6 +29,8 @@ variables:
   words_control_loop: (foreach|forall|forskip|for|until|while)
   words_control_flow: (break|return|exit|quit|halt|continue)
   words_other_output: (prin(tf?)?|probe|\?\?|\?)
+  words_decl_function: (function|funct|func|does|module|closure|native|action|has)
+  words_decl_object: (object|context|construct)
 
 first_line_match: '^\s*(?i)(Rebol|Red)\s\['
 scope: source.rebol
@@ -203,10 +205,10 @@ contexts:
         1: storage.type.filename.rebol
 
   match-char:
-    - match: '(#")'
+    - match: '(#)(")'
       scope: storage.type.character.rebol
       captures:
-        1: punctuation.definition.character.begin.rebol
+        2: punctuation.definition.character.begin.rebol
       push:
         # TODO: capture invalid chars like: #"xxxxx" and #"^xxx"?
         - meta_scope: storage.string.character.rebol
@@ -263,8 +265,6 @@ contexts:
       pop: true
     - include: main
 
-
-  # TODO: support ANSI escape sequences.
   match-string:
     - include: match-string-double
     - include: match-string-braces
@@ -277,12 +277,20 @@ contexts:
   match-string-escaped-char:
     - match: '\^\((\h{0,4}|null|line|tab|page|esc|back|del)\)'
       scope: constant.character.escape.rebol
+    - include: match-ansi-sequence
     - match: \^(?![\(])[[:ascii:]]
       scope: constant.character.escape.rebol
     - match: \^(.)
       captures:
         0: invalid.rebol
         1: invalid.illegal.rebol
+
+  # TODO: improve this (only colors are handled now!)
+  match-ansi-sequence:
+    - match: '(\^\[\[)((\d)+(;(\d)+)*)?(m)'
+      scope: meta.sequence.ansi
+      captures:
+        0: constant.character.escape.rebol
 
   pop-string-double:
     - meta_include_prototype: false
@@ -566,7 +574,7 @@ contexts:
       scope: variable.other.rebol
 
   match-decl-function:
-    - match: ({{ident}})(:)\s*(function|funct|func|does|module|closure|native|action|has)(?![^{{non_ident_chars}}])
+    - match: ({{ident}})(:)\s*{{words_decl_function}}(?=(\s*\[))
       captures:
         1: entity.name.function.rebol
         2: keyword.operator.assignment.rebol
@@ -575,8 +583,9 @@ contexts:
       #  - pop-block
       #  - pop-locals
       #  - pop-params
+
   match-decl-object:
-    - match: ({{ident}})(:)\s*(object|context)(?![^{{non_ident_chars}}])
+    - match: ({{ident}})(:)\s*{{words_decl_object}}(?![^{{non_ident_chars}}])
       captures:
         1: entity.name.class.rebol
         2: keyword.operator.assignment.rebol

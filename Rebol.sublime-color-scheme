@@ -18,6 +18,7 @@
         "word"      : "#f80a0a",
         "word_set"  : "var(word)",
         "word_get"  : "var(word)",
+        "word_que"  : "#FF7800",
         "char"      : "#409B1C",
         "key"       : "#FF7800",
         "tag"       : "#3F5880",
@@ -440,7 +441,7 @@
         },
         {
             "name": "entity.name.function",
-            "scope": "entity.name.function, entity.name.class.rebol",
+            "scope": "entity.name.function, entity.name.class",
             "foreground": "#a62f00",
             "background": "#FFE9D1",
             "font_style": "bold",
@@ -469,6 +470,11 @@
             "scope": "entity.name.word.set",
             "foreground": "var(word_set)",
             "font_style": "bold"
+        },
+        {
+            "name": "entity.name.word.query",
+            "scope": "entity.name.word.query, word.query",
+            "foreground": "var(word_que)",
         },
         /*
         {
