@@ -1,4 +1,4 @@
-// SYNTAX TEST "Packages/Rebol/Rebol.sublime-syntax"
+; SYNTAX TEST "Packages/Rebol/Rebol.sublime-syntax"
 
  LEX_DELIMIT: charset [
     #"^(00)" ; null
@@ -10,58 +10,59 @@
 ] ; ==> '\x00\x0A\x0D\x20\x22\(\)/;\[\]{}'
 
 ;----
-//^^^ comment.docline.rebol punctuation.definition.comment.begin.rebol
+;^^^^ comment.docline.rebol punctuation.definition.comment.begin.rebol
+
 ;@@ foo
-//^ comment.todo.rebol punctuation.definition.comment.todo.rebol
-//  ^^^ comment.todo.rebol
+;^^ comment.todo.rebol punctuation.definition.comment.todo.rebol
+;   ^^^ comment.todo.rebol
 ;  aaa
-// ^^^ comment.line.rebol
+;  ^^^ comment.line.rebol
 
 ;----------------------------------------------------------------
 ;-- integer! decimal!                                            
   111
-//^^^ constant.numeric.rebol
+; ^^^ constant.numeric.rebol
   1.0
-//^^^ constant.numeric.rebol
-// ^ constant.numeric.rebol punctuation.separator.decimal.rebol
+; ^^^ constant.numeric.rebol
+;  ^ constant.numeric.rebol punctuation.separator.decimal.rebol
   2e1
-//^^^ constant.numeric.rebol
-// ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
+; ^^^ constant.numeric.rebol
+;  ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
   2.0e2
-//^^^^^ constant.numeric.rebol
-// ^ constant.numeric.rebol punctuation.separator.decimal.rebol
-//   ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
+; ^^^^^ constant.numeric.rebol
+;  ^ constant.numeric.rebol punctuation.separator.decimal.rebol
+;    ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
   -2
-//^^ constant.numeric.rebol
+; ^^ constant.numeric.rebol
   2e+1
-//^^^^ constant.numeric.rebol
-// ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
-//  ^^ constant.numeric.rebol constant.numeric.exponent.rebol
+; ^^^^ constant.numeric.rebol
+;  ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
+;   ^^ constant.numeric.rebol constant.numeric.exponent.rebol
 
   1.#inf
-//^^^^^^ constant.numeric.rebol
+; ^^^^^^ constant.numeric.rebol
   +1.#inf
   -1.#INF
   1.#nan
   +1.#NaN
-//^^^^^^^ constant.numeric.rebol
+; ^^^^^^^ constant.numeric.rebol
 
 ;----------------------------------------------------------------
 ;-- logic! none!                                                 
   true false none
-//^^^^ constant.language.rebol
-//     ^^^^^ constant.language.rebol
-//           ^^^^ constant.language.rebol
+; ^^^^ constant.language.rebol
+;      ^^^^^ constant.language.rebol
+;            ^^^^ constant.language.rebol
 
 ;----------------------------------------------------------------
 ;-- time!                                                        
   1:00
-//^^^^ constant.numeric.time.rebol
-// ^ constant.numeric.time.rebol punctuation.separator.time.rebol
-//  ^^ constant.numeric.time.rebol
+; ^^^^ constant.numeric.time.rebol
+;  ^ constant.numeric.time.rebol punctuation.separator.time.rebol
+;   ^^ constant.numeric.time.rebol
   1:00am
-//^^^^^^ constant.numeric.time.rebol
-//    ^^ constant.numeric.time.rebol storage.type.ampm.rebol
+; ^^^^^^ constant.numeric.time.rebol
+;     ^^ constant.numeric.time.rebol storage.type.ampm.rebol
 
  1:00:00
  1:00:00.01
@@ -116,20 +117,20 @@
 ;----------------------------------------------------------------
 ;-- pair!                                                        
     2x2
-//  ^^^ constant.numeric.pair.rebol
-//   ^ constant.numeric.pair.rebol storage.type.numeric.pair.rebol
+;   ^^^ constant.numeric.pair.rebol
+;    ^ constant.numeric.pair.rebol storage.type.numeric.pair.rebol
     0x0.5
-//    ^^^ constant.numeric.pair.rebol
+;     ^^^ constant.numeric.pair.rebol
   0.5x0
-//^^^^^ constant.numeric.pair.rebol
-//   ^ constant.numeric.pair.rebol storage.type.numeric.pair.rebol
-//    ^ constant.numeric.pair.rebol
+; ^^^^^ constant.numeric.pair.rebol
+;    ^ constant.numeric.pair.rebol storage.type.numeric.pair.rebol
+;     ^ constant.numeric.pair.rebol
   2.2x3.4
-//    ^^^ constant.numeric.pair.rebol
+;     ^^^ constant.numeric.pair.rebol
   2e2x1
-//^^^^^ constant.numeric.pair.rebol
+; ^^^^^ constant.numeric.pair.rebol
   1.#InFx1.#NaN
-//^^^^^^ constant.numeric.pair.rebol constant.numeric.pair.special.rebol
+; ^^^^^^ constant.numeric.pair.rebol constant.numeric.pair.special.rebol
 
 
 ;----------------------------------------------------------------
@@ -139,20 +140,19 @@
   01AAh
   AAAAAAh
   AAAAAAAAh
-//^^^^^^^^^ constant.numeric.hex.rebol
-//        ^ constant.numeric.hex.rebol storage.type.numeric.hex.rebol
+; ^^^^^^^^^ constant.numeric.hex.rebol
+;         ^ constant.numeric.hex.rebol storage.type.numeric.hex.rebol
 ;these should not be recognized as valid numbers:
 0h Ah AAAAAAAAAAh aah
 
   " ^(0) ^(00) ^(000) invalid:^(0000a)"
-//^ string.quoted.double.rebol punctuation.definition.string.begin.rebol
-// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.rebol
-//  
-
+; ^ string.quoted.double.rebol punctuation.definition.string.begin.rebol
+;  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.rebol  
+;                              ^ string.quoted.double.rebol invalid.rebol invalid.illegal.rebol
 ;-- map!
   #(a: 1 b: 2)
-//^^ meta.mapping.rebol meta.mapping.begin.rebol
-//  ^ meta.mapping.rebol entity.name.word.set.rebol
+; ^^ meta.mapping.rebol meta.mapping.begin.rebol
+;   ^ meta.mapping.rebol entity.name.word.set.rebol
 
 ;-- Construction syntax
 #[true]
@@ -171,10 +171,10 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
   2       ; index
 ]
   #[logic! 0]
-//^^ meta.construct.rebol meta.construct.begin.rebol
-//  ^^^^^^ meta.construct.rebol storage.type.datatype.rebol
-//        ^^^ meta.construct.rebol
-//          ^ meta.construct.rebol meta.construct.end.rebol
+; ^^ meta.construct.rebol meta.construct.begin.rebol
+;   ^^^^^^ meta.construct.rebol storage.type.datatype.rebol
+;         ^^^ meta.construct.rebol
+;           ^ meta.construct.rebol meta.construct.end.rebol
 
   #[true]
 
@@ -182,31 +182,30 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
 ;-- binary!                                                      
 
   #{F00D}
-//^^ binary.base16.rebol string.binary.prefix
-//  ^^^^ binary.base16.rebol string.binary.base16.rebol
-//      ^ binary.base16.rebol string.binary.prefix
+; ^^ binary.base16.rebol string.binary.prefix
+;   ^^^^ binary.base16.rebol string.binary.base16.rebol
+;       ^ binary.base16.rebol string.binary.prefix
 
   16#{F00D}
-//^^^^ binary.base16.rebol string.binary.prefix
+; ^^^^ binary.base16.rebol string.binary.prefix
 
   64#{8A0=}
-//^^^^ binary.base64.rebol string.binary.prefix
-//    ^^^^ binary.base64.rebol string.binary.base64.rebol
+; ^^^^ binary.base64.rebol string.binary.prefix
+;     ^^^^ binary.base64.rebol string.binary.base64.rebol
 
   2#{0000 1100}
-//^^^ binary.base2.rebol string.binary.prefix
-//   ^^^^^^^^^ binary.base2.rebol string.binary.base2.rebol
+; ^^^ binary.base2.rebol string.binary.prefix
+;    ^^^^^^^^^ binary.base2.rebol string.binary.base2.rebol
 
 ;----------------------------------------------------------------
 ;-- tag!                                                         
   <tag>
-//^^^^ entity.tag.rebol entity.other.namespace.xml
+; ^^^^ entity.tag.rebol entity.other.namespace.xml
   <tag name="foo" id='id'/>
-//^^^^^^^^^ entity.tag.rebol entity.other.namespace.xml
-//    ^^^^^ entity.tag.rebol entity.other.namespace.xml
-//         ^^^^^^^^^^^^^^^^ entity.tag.rebol
-//          ^^^^^ entity.tag.rebol string.quoted.double.xml
-//                   ^^^^ entity.tag.rebol string.quoted.single.xml
+;  ^^^^^^^^ entity.tag.rebol entity.other.namespace.xml
+;           ^^^^^ entity.tag.rebol string.quoted.double.xml
+;                 ^^ entity.tag.rebol entity.other.namespace.xml
+;                    ^^^^ entity.tag.rebol string.quoted.single.xml
 
 <---> ;<-- this is word! in Red, not a tag!
 
@@ -215,12 +214,12 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
 
 
   http://user:pass@host:80/path?query#tag
-//^^^^ string.url.rebol string.url.scheme.rebol
-//    ^^^ string.url.rebol storage.type.url.rebol
-//                        ^^^^^^^^^^^^^^^ string.url.rebol
+; ^^^^ string.url.rebol string.url.scheme.rebol
+;     ^^^ string.url.rebol storage.type.url.rebol
+;                          ^^^^^^^^^^^^^^^ string.url.rebol
   scheme:/
-//^^^^^^ string.url.rebol string.url.scheme.rebol
-//      ^^ string.url.rebol storage.type.url.rebol
+; ^^^^^^ string.url.rebol string.url.scheme.rebol
+;       ^^ string.url.rebol storage.type.url.rebol
   scheme://
   scheme:host
   mailto:user@foo.com
@@ -232,12 +231,12 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
 ;-- set-word! get-word!                                          
 
   value: 111
-//^^^^^ entity.name.word.set.rebol
-//     ^ keyword.operator.assignment.rebol
+; ^^^^^ entity.name.word.set.rebol
+;      ^ keyword.operator.assignment.rebol
 
   :value
-//^ keyword.operator.assignment.rebol
-// ^^^^^ entity.name.word.get.rebol
+; ^ keyword.operator.assignment.rebol
+;  ^^^^^ entity.name.word.get.rebol
 
   word's:
   >>:
@@ -250,8 +249,8 @@ true: false: none:
 ;-- lit-word!                                                    
 
   'value
-//^ keyword.operator.quote.rebol
-// ^^^^^ entity.name.word.lit.rebol
+; ^ keyword.operator.quote.rebol
+;  ^^^^^ entity.name.word.lit.rebol
 ; these are valid lit-words:
   'value''''
   '_'
@@ -265,8 +264,8 @@ true: false: none:
 ;-- refinement!                                                  
 
   /refinement
-//^ keyword.operator.refinement.rebol
-// ^^^^^^^^^^ entity.name.word.refinement.rebol
+; ^ keyword.operator.refinement.rebol
+;  ^^^^^^^^^^ entity.name.word.refinement.rebol
 
   /2nd /<< />>
 
@@ -276,8 +275,8 @@ true: false: none:
 ;-- datatype!                                                    
 
   integer!
-//^^^^^^^^ storage.type.datatype.rebol
-//       ^ storage.type.datatype.rebol storage.type.punctuation.rebol
+; ^^^^^^^^ storage.type.datatype.rebol
+;        ^ storage.type.datatype.rebol storage.type.punctuation.rebol
 
 ;----------------------------------------------------------------
 ;-- function!                                                    
