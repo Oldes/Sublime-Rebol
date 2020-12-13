@@ -145,6 +145,41 @@
 ; ^^^^^^ constant.numeric.pair.rebol constant.numeric.pair.special.rebol
   -1.0x+2.0
 
+;----------------------------------------------------------------
+;-- string                                                       
+  "a;b"
+;  ^^^^^ string.quoted.double.rebol
+;  ^ string.quoted.double.rebol punctuation.definition.string.begin.rebol
+;      ^ string.quoted.double.rebol punctuation.definition.string.end.rebol
+  "a{b"
+  {a;b}
+;  ^^^^^ string.quoted.double.rebol
+;  ^ string.quoted.double.rebol punctuation.definition.string.begin.rebol
+;      ^ string.quoted.double.rebol punctuation.definition.string.end.rebol
+
+
+;----------------------------------------------------------------
+;-- char!                                                        
+  #"a"
+; ^^^^ constant.character.literal.rebol
+; ^ constant.character.literal.rebol storage.modifier.rebol
+;  ^ constant.character.literal.rebol punctuation.definition.character.begin.rebol
+;    ^ constant.character.literal.rebol punctuation.definition.character.end.rebol
+  #";"
+; ^^^^ constant.character.literal.rebol
+;  ^ constant.character.literal.rebol punctuation.definition.character.begin.rebol
+  #"^/"
+;   ^^ constant.character.literal.rebol constant.character.escape.rebol
+  #"^(00)"
+  #"^(tab)"
+; ^^^^^^^^^ constant.character.literal.rebol
+;   ^^^^^^ constant.character.literal.rebol constant.character.escape.rebol
+  #"" ; valid, same like #"^@"
+; ^^^ constant.character.literal.rebol
+
+; invalid chars:
+  #"foo"  #"^ab"  #"^(tab)x" #"^(00000)"
+
 
 ;----------------------------------------------------------------
 ;-- hex number (Red only)                                        

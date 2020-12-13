@@ -171,7 +171,7 @@
         },
         {
             "name": "Strings Punctuation",
-            "scope": "string punctuation.definition.string",
+            "scope": "string punctuation.definition.string, constant punctuation.definition.character",
             "foreground": "var(string2)"
         },
         {
@@ -368,6 +368,11 @@
             "name": "Constant character",
             "scope": "contant.character",
             "foreground": "var(char)",
+        },
+       {
+            "name": "Character",
+            "scope": "constant.character.literal",
+            "foreground": "var(string)",
         },
         {
             "name": "constant.character.entity.html",
@@ -643,11 +648,6 @@
             "scope": "punctuation.separator.time",
         },
         */
-       {
-            "name": "Storage string character",
-            "scope": "storage.string.character",
-            "foreground": "var(char)",
-        },
         {
            "name": "storage.type.ampm",
            "scope": "storage.type.ampm",

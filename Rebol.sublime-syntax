@@ -213,23 +213,37 @@ contexts:
 
   match-char:
     - match: '(#)(")'
-      scope: storage.type.character.rebol
       captures:
+        1: storage.modifier.rebol
         2: punctuation.definition.character.begin.rebol
       push:
-        # TODO: capture invalid chars like: #"xxxxx" and #"^xxx"?
-        - meta_scope: storage.string.character.rebol
-        - match: '"'
-          scope: punctuation.definition.character.end.rebol
-          pop: true
-        - match: \^\^
-          scope: constant.character.escape.rebol
-        - match: \^\([^)]*\)
-          scope: constant.character.escape.rebol
-        - match: \^.([^"]+)
-          scope: constant.character.escape.rebol
-        #  captures:
-        #    1: invalid.illegal.rebol
+        - meta_include_prototype: false
+        - meta_scope: constant.character.literal.rebol
+        - include: pop-char
+
+  pop-char:
+    - meta_include_prototype: false
+    - match: '"'
+      scope: punctuation.definition.character.end.rebol
+      pop: true
+    - match: \^\((\h{0,4}|null|line|tab|page|esc|back|del)\)([^"]*)(")
+      scope: constant.character.escape.rebol
+      captures:
+        2: invalid.illegal.rebol
+        3: punctuation.definition.character.end.rebol
+      pop: true
+    - match: \^.([^"]*)(")
+      scope: constant.character.escape.rebol
+      captures:
+        1: invalid.illegal.rebol
+        2: punctuation.definition.character.end.rebol
+      pop: true
+    - match: .([^"]+)(")
+      scope: constant.character.escape.rebol
+      captures:
+        1: invalid.illegal.rebol
+        2: punctuation.definition.character.end.rebol
+      pop: true
 
   match-html-characters:
     - match: "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)"
