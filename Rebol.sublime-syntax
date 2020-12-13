@@ -14,8 +14,8 @@ variables:
   non_ident_chars: '{{delimiters}}\s'
   non_ident_start_chars: \d'{{non_ident_chars}}
   ident: '[^{{non_ident_start_chars}}][^{{non_ident_chars}}]*'
-  inf_or_nan: '([+-]?1\.#(?i)(inf|nan))'
-  float_or_int: '[+-]?\d+(?:(\.)\d+)?(?:([Ee][+-]?)\d+)?'
+  inf_or_nan: '(([+-])?1\.#(?i)(inf|nan))'
+  float_or_int: '([+-])?\d+(?:(\.)\d+)?(?:([Ee][+-]?)\d+)?'
   non_url_chars: '\s\[\]\(\){}";'
   non_email_chars: '{{non_url_chars}}:'
   months: (?i)(Jan(u(a(ry?)?)?)?|Feb(u(a(ry?)?)?)?|Mar(ch?)?|Apr(il?)?|May|June?|July?|Aug(u(st?)?)?|Sep(t(e(m(b(er?)?)?)?)?)?|Oct(o(b(er?)?)?)?|Nov(e(m(b(er?)?)?)?)?|Dec(e(m(b(er?)?)?)?)?)
@@ -30,7 +30,7 @@ variables:
   words_control_flow: (break|return|exit|quit|halt|continue)
   words_other_output: (prin(tf?)?|probe|\?\?|\?)
   words_decl_function: (function|funct|func|does|module|closure|native|action|has)
-  words_decl_object: (object|context|construct)
+  words_decl_object: (object|context|construct|map)
 
 first_line_match: '^\s*(?i)(Rebol|Red)\s\['
 scope: source.rebol
@@ -71,16 +71,22 @@ contexts:
     - include: match-hex-integers
     - match: '{{inf_or_nan}}'
       scope: constant.numeric.rebol
-    - match: '[+-]?\d+\.(#)'
+      captures:
+        2: punctuation.definition.numeric.sign.rebol
+    - match: '([+-])?\d+\.(#)'
       scope: invalid.rebol
       captures:
-        1: invalid.illegal.rebol
-    - match: '[+-]?\d+(?:(\.)\d+)?(?:(([Ee])(([+-])?\d+)))?'
+        1: punctuation.definition.numeric.sign.rebol
+        2: invalid.illegal.rebol
+    - match: ([+-]?)\d+(')*(?:(\.)\d+)?(?:(([Ee])(([+-])?\d+)))?
       scope: constant.numeric.rebol
       captures:
-        1: punctuation.separator.decimal.rebol
-        2: constant.numeric.exponent.rebol
-        3: punctuation.separator.exponent.rebol
+        1: punctuation.definition.numeric.sign.rebol
+        2: punctuation.separator.quote.rebol
+        3: punctuation.separator.decimal.rebol
+        4: constant.numeric.exponent.rebol
+        5: punctuation.separator.exponent.rebol
+        7: punctuation.definition.numeric.sign.rebol
 
   match-hex-integers:
     #Note: hex integers are so far Red only (and probably will be replaced)
@@ -95,6 +101,7 @@ contexts:
     - match: ([+-])?(?:\d+(:))?\d+(:)\d+(?:([.,])\d+)?(?:(?i)(am|pm))?
       scope: constant.numeric.time.rebol
       captures:
+        1: punctuation.definition.numeric.sign.rebol
         2: punctuation.separator.time.rebol
         3: punctuation.separator.time.rebol
         4: punctuation.separator.time.rebol
@@ -215,6 +222,8 @@ contexts:
         - match: '"'
           scope: punctuation.definition.character.end.rebol
           pop: true
+        - match: \^\^
+          scope: constant.character.escape.rebol
         - match: \^\([^)]*\)
           scope: constant.character.escape.rebol
         - match: \^.([^"]+)
@@ -320,8 +329,10 @@ contexts:
     - match: '({{inf_or_nan}}|{{float_or_int}}|\d+)(x)({{inf_or_nan}}|{{float_or_int}}|\d+)'
       scope: constant.numeric.pair.rebol
       captures:
-         2: constant.numeric.pair.special.rebol
-         6: storage.type.numeric.pair.rebol
+         5: punctuation.definition.numeric.sign.rebol
+         4: constant.numeric.pair.special.rebol
+         8: storage.type.numeric.pair.rebol
+         13: punctuation.definition.numeric.sign.rebol
 
   match-binary:
     - include: match-binary-base2
@@ -511,12 +522,14 @@ contexts:
       scope: keyword.control.flow.rebol
     - match: '(?i){{words_other_output}}{{word_boundary}}'
       scope: keyword.other.output.rebol
-    - match: '(?i)(==|!=|<=|>=|<>|<|>|=){{word_boundary}}'
+    - match: '(?i)(==|=\?|!==|!=|<=|>=|<>|<|>|=){{word_boundary}}'
       scope: keyword.operator.comparison.rebol
-    - match: '(?i)(all|any|not){{word_boundary}}'
+    - match: '(?i)(all|any|not|or|xor){{word_boundary}}'
       scope: keyword.operator.logical.rebol
     - match: '(\+\+|--){{word_boundary}}'
       scope: keyword.operator.assignment.augmented.rebol
+    - match: \+|\-|\*|\*\*|/|//|<<|>>|&|\|
+      scope: keyword.operator.arithmetic.rebol
     - include: match-keyword-bincode
     - include: match-keyword-tests
 

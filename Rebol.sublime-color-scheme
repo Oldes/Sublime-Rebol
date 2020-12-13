@@ -30,6 +30,7 @@
         "pre_bin"   : "hsl(32, 42%, 45%)",
         "comment"   : "hsl(0, 0%, 62%)",
         "op"        : "hsl(23, 62%, 34%)",
+        "op2"       : "mediumvioletred",
         "number"    : "blueviolet",
         "variable"  : "hsl(2, 65%, 10%)",
         "function"  : "hsl(206, 70%, 55%)",
@@ -160,7 +161,7 @@
         },
         {
             "name": "Misc Punctuation",
-            "scope": "punctuation.separator, punctuation.terminator, punctuation.accessor",
+            "scope": "punctuation.separator, punctuation.terminator, punctuation.accessor, punctuation.definition.numeric",
             "foreground": "var(grey2)"
         },
         {
@@ -521,10 +522,17 @@
         {
             "name": "keyword.operator.comparison",
             "scope": "keyword.operator.comparison",
+            "foreground": "var(op2)",
+        },
+        {
+            "name": "keyword.operator.arithmetic",
+            "scope": "keyword.operator.arithmetic",
+            "foreground": "var(op2)",
         },
         {
             "name": "keyword.operator.logical",
             "scope": "keyword.operator.logical",
+            "foreground": "var(op2)",
         },
         {
             "name": "keyword.operator.quote",

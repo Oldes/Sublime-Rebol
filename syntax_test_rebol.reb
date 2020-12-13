@@ -22,9 +22,18 @@
 ;-- integer! decimal!                                            
   111
 ; ^^^ constant.numeric.rebol
+;     ^ keyword.operator.arithmetic.rebol
+  1' ;@@ valid in Rebol but not in Red!
+; ^^ constant.numeric.rebol
+;  ^ constant.numeric.rebol punctuation.separator.quote.rebol
+  1'000'000
+; ^^^^^^^^^
+;  ^ constant.numeric.rebol punctuation.separator.quote.rebol
   1.0
 ; ^^^ constant.numeric.rebol
 ;  ^ constant.numeric.rebol punctuation.separator.decimal.rebol
+  1'000.0
+; ^^^^^^^ constant.numeric.rebol
   2e1
 ; ^^^ constant.numeric.rebol
 ;  ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
@@ -32,12 +41,14 @@
 ; ^^^^^ constant.numeric.rebol
 ;  ^ constant.numeric.rebol punctuation.separator.decimal.rebol
 ;    ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
-  -2
+  -2 + 2
 ; ^^ constant.numeric.rebol
+; ^ constant.numeric.rebol punctuation.definition.numeric.sign.rebol
   2e+1
 ; ^^^^ constant.numeric.rebol
 ;  ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.separator.exponent.rebol
-;   ^^ constant.numeric.rebol constant.numeric.exponent.rebol
+;   ^ constant.numeric.rebol constant.numeric.exponent.rebol punctuation.definition.numeric.sign.rebol
+;    ^ constant.numeric.rebol constant.numeric.exponent.rebol
 
   1.#inf
 ; ^^^^^^ constant.numeric.rebol
@@ -46,6 +57,7 @@
   1.#nan
   +1.#NaN
 ; ^^^^^^^ constant.numeric.rebol
+; ^ constant.numeric.rebol punctuation.definition.numeric.sign.rebol
 
 ;----------------------------------------------------------------
 ;-- logic! none!                                                 
@@ -131,6 +143,7 @@
 ; ^^^^^ constant.numeric.pair.rebol
   1.#InFx1.#NaN
 ; ^^^^^^ constant.numeric.pair.rebol constant.numeric.pair.special.rebol
+  -1.0x+2.0
 
 
 ;----------------------------------------------------------------
