@@ -253,17 +253,20 @@ contexts:
         2: punctuation.definition.entity.html
 
   match-hashtag:
-    - match: (?:\#{)
+    - match: (?:(#)({))
       captures:
         0: string.binary.prefix
+        1: storage.modifier.rebol
       push: pop-binary-base16
-    - match: (?:\#\()
+    - match: (?:(#)\()
       captures:
-        0: meta.mapping.begin.rebol
+        0: punctuation.section.mapping.begin.rebol
+        1: storage.modifier.rebol
       push: pop-mapping
-    - match: (?:\#\[(?![\]]))
+    - match: (?:(#)\[(?![\]]))
       captures:
-        0: meta.construct.begin.rebol
+        0: punctuation.section.construct.begin.rebol
+        1: storage.modifier.rebol
       push: pop-construct
     - match: (\#)(?![^{{non_ident_chars}}@])
       scope: invalid.rebol
@@ -277,14 +280,14 @@ contexts:
   pop-construct:
     - meta_scope: meta.construct.rebol
     - match: ']'
-      scope: meta.construct.end.rebol
+      scope: punctuation.section.construct.end.rebol
       pop: true
     - include: main
 
   pop-mapping:
     - meta_scope: meta.mapping.rebol
     - match: '\)'
-      scope: meta.mapping.end.rebol
+      scope: punctuation.section.mapping.end.rebol
       pop: true
     - include: main
 

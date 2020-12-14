@@ -199,8 +199,10 @@
 ;                              ^ string.quoted.double.rebol invalid.rebol invalid.illegal.rebol
 ;-- map!
   #(a: 1 b: 2)
-; ^^ meta.mapping.rebol meta.mapping.begin.rebol
+; ^^ meta.mapping.rebol punctuation.section.mapping.begin.rebol
+; ^ meta.mapping.rebol punctuation.section.mapping.begin.rebol storage.modifier.rebol
 ;   ^ meta.mapping.rebol entity.name.word.set.rebol
+;            ^ meta.mapping.rebol punctuation.section.mapping.end.rebol
 
 ;-- Construction syntax
 #[true]
@@ -219,10 +221,12 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
   2       ; index
 ]
   #[logic! 0]
-; ^^ meta.construct.rebol meta.construct.begin.rebol
+; ^^^^^^^^^^^ meta.construct.rebol
+; ^^ meta.construct.rebol punctuation.section.construct.begin.rebol
+; ^ meta.construct.rebol punctuation.section.construct.begin.rebol storage.modifier.rebol
 ;   ^^^^^^ meta.construct.rebol storage.type.datatype.rebol
-;         ^^^ meta.construct.rebol
-;           ^ meta.construct.rebol meta.construct.end.rebol
+;          ^ meta.construct.rebol constant.numeric.rebol
+;           ^ meta.construct.rebol punctuation.section.construct.end.rebol
 
   #[true]
 
@@ -272,7 +276,7 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
   scheme:host
   mailto:user@foo.com
 
-  path/:a
+  path/:a ;<-- not url!
 
 
 ;----------------------------------------------------------------

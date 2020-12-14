@@ -165,9 +165,14 @@
             "foreground": "var(grey2)"
         },
         {
-            "name": "Misc Punctuation",
+            "name": "Punctuation Section",
             "scope": "punctuation.section",
             "foreground": "var(grey3)"
+        },
+        {
+            "name": "Punctuation Storage",
+            "scope": "punctuation.section.construct, punctuation.section.mapping",
+            "foreground": "var(storage)"
         },
         {
             "name": "Strings Punctuation",
