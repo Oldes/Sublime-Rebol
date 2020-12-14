@@ -413,6 +413,7 @@ contexts:
     - include: match-comment-docline
     - include: match-comment-todo
     - include: match-comment-line
+    - include: match-comment-shebang
 
   match-comment-docline:
     - match: '({{comment_line_start}}[-]+).*$'
@@ -431,6 +432,12 @@ contexts:
       scope: comment.line.rebol
       captures:
         1: punctuation.definition.comment.begin.rebol
+
+  match-comment-shebang:
+    - match: ^(#!).*$\n?
+      scope: comment.line.shebang.rebol
+      captures:
+        1: punctuation.definition.comment.rebol
 
   match-comment:
     - match: '(comment){{word_boundary}}(?![\)\]\}])(\s+(quote))?\s*'

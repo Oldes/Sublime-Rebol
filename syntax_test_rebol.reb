@@ -18,6 +18,9 @@
 ;  aaa
 ;  ^^^ comment.line.rebol
 
+#!/usr/bin/rebol
+;^^^^^^^^^^^^^^^^ comment.line.shebang.rebol
+
 ;----------------------------------------------------------------
 ;-- integer! decimal!                                            
   111
@@ -334,6 +337,7 @@ true: false: none:
 ;-- function!                                                    
 
  foo: function [
+;^^^ entity.name.function.rebol
     "Some description"
     argument [any-value!] "description"
     /refinement
@@ -344,3 +348,11 @@ true: false: none:
     if refinement [return value]
     argument
  ]
+
+ ctx: context [
+;^^^ entity.name.class.rebol
+  foo: 1
+ ]
+
+ my-module: module [][]
+;^^^^^^^^^ entity.name.function.rebol
