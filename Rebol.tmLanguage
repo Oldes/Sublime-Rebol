@@ -8,6 +8,7 @@
 		<string>r</string>
 		<string>r2</string>
 		<string>r3</string>
+		<string>reb-seed</string>
 	</array>
 	<key>firstLineMatch</key>
 	<string>^\s*(?i)(Rebol)\s\[</string>
