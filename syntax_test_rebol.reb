@@ -336,7 +336,7 @@ true: false: none:
 ;----------------------------------------------------------------
 ;-- function!                                                    
 
- foo: function [
+ foo1: function [
 ;^^^ entity.name.function.rebol
     "Some description"
     argument [any-value!] "description"
@@ -349,10 +349,15 @@ true: false: none:
     argument
  ]
 
- ctx: context [
+ foo2: function/with  [][][]
+ foo3: closure/extern [][][]
+
+ ctx1: context [
 ;^^^ entity.name.class.rebol
   foo: 1
  ]
+ ctx2: construct/with [a: 1] object [a: 2 b: 2]
 
  my-module: module [][]
 ;^^^^^^^^^ entity.name.function.rebol
+ my-module: module/mixin [][] ctx2

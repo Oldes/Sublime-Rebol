@@ -611,7 +611,7 @@ contexts:
       scope: variable.other.rebol
 
   match-decl-function:
-    - match: ({{ident}})(:)\s*{{words_decl_function}}(?=(\s*\[))
+    - match: ({{ident}})(:)\s*{{words_decl_function}}((?=(\s*\[))|(?=(\/)))
       captures:
         1: entity.name.function.rebol
         2: keyword.operator.assignment.rebol
