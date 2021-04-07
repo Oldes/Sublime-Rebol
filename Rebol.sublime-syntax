@@ -7,7 +7,7 @@ file_extensions:
   - r3
   - reb
   - r
-  - reb-seed
+  - nest
 
 variables:
   comment_line_start: ;

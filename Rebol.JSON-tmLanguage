@@ -1,6 +1,6 @@
 { "name": "Rebol",
   "scopeName": "source.rebol",
-  "fileTypes": ["reb", "r", "r2", "r3", "reb-seed"],
+  "fileTypes": ["reb", "r", "r2", "r3", "nest"],
 
   "firstLineMatch": "^\\s*(?i)(Rebol)\\s\\[",
   "foldingStartMarker": "^([^;]*[\\[\\{\\(])+\\s*(\\;.*)?$",
