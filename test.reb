@@ -176,7 +176,14 @@ foo@gmail.com
 ;-- tag!
 <tag></tag><tag/>
 <tag id='a' foo="b">
-<---> ;<-- this is word! in Red, not a tag!
+<-s>
+<@> ;not email!
+<#a>
+; arrow like word examples (not tags!)
+<--->
+<----
+---->
+<<->>
 
 ;-- url!
 http://user:pass@host:80/path?query#tag

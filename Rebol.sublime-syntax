@@ -24,6 +24,7 @@ variables:
   any_word_chars: '[^{{lex_delimit}}]*'
   lit_word_start_chars: ^[\d\'\:@]   #awoid: '2nd ''word ':word '@ref
   lit_word_chars: '[{{lit_word_start_chars}}]{{any_word_chars}}'
+  arrow_word_chars: '[-<>]+'
   refinement_chars: '{{any_word_chars}}'
   word_boundary: (?![^{{non_ident_chars}}])
   words_control_conditional: (if|either|unless|case|switch)
@@ -52,6 +53,7 @@ contexts:
     - include: match-money
     - include: match-tuple
     - include: match-pair
+    - include: match-arrow-word
     - include: match-tag
     - include: match-lit-word
     - include: match-refinement
@@ -169,6 +171,8 @@ contexts:
             - meta_scope: string.quoted.double.xml
             - match: '"'
               pop: true
+    - match: '<[^>]+>'
+      scope: entity.tag.rebol
 
   # Note: the email literal in Red is EXTREMELY permissive.
   # Note: this is actually ref! datatype: @name
@@ -532,6 +536,10 @@ contexts:
         1: keyword.operator.quote.rebol
         2: invalid.illegal.rebol
 
+  match-arrow-word:
+    - match: (<)({{arrow_word_chars}}){{word_boundary}}
+      scope: variable.other.rebol
+
   match-refinement:
     - match: (/)({{refinement_chars}}){{word_boundary}}
       captures:
@@ -553,7 +561,7 @@ contexts:
       scope: keyword.operator.logical.rebol
     - match: '(\+\+|--){{word_boundary}}'
       scope: keyword.operator.assignment.augmented.rebol
-    - match: \+|\-|\*|\*\*|/|//|<<|>>|&|\|
+    - match: '(\+|\-|\*|\*\*|/|//|<<|>>|&|\|){{word_boundary}}'
       scope: keyword.operator.arithmetic.rebol
     - include: match-keyword-bincode
     - include: match-keyword-tests

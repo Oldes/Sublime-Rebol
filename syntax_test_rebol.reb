@@ -361,3 +361,9 @@ true: false: none:
  my-module: module [][]
 ;^^^^^^^^^ entity.name.function.rebol
  my-module: module/mixin [][] ctx2
+
+
+ <--->
+;^^^^^ variable.other.rebol
+ ---->
+;^^^^^ variable.other.rebol
