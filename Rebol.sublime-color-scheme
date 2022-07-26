@@ -43,6 +43,7 @@
         "back_test" : "#F6F1EB",
         "fore_issue": "#33312f",
         "back_issue": "#fdeacc",
+        "back_const": "#F8FBFF",
         "white": "hsl(0, 0%, 100%)",
         "white2": "hsl(0, 0%, 97%)",
         "white3": "hsl(0, 0%, 96%)",
@@ -563,7 +564,7 @@
             "name": "Construction syntax",
             "scope": "meta.construct",
             "foreground": "#7220ae",
-            "font_style": "italic",
+            "background": "var(back_const)",
         },
         {
             "name": "Meta block",
