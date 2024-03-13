@@ -11,7 +11,7 @@ It's recommened to use it with included [Rebol.sublime-color-scheme](Rebol.subli
 
 ## via Package Control
 
-1. Make sure you already have [Package Control](https://sublime.wbond.net) installed.
+1. Make sure you already have [Package Control](https://packagecontrol.io/) installed.
 2. Choose Install Package from the Command Palette (via Tools > Coomand Palette from the main menu).
 3. Select **REBOL** package and press Enter.
 
