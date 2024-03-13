@@ -201,29 +201,29 @@
 ;  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.rebol  
 ;                              ^ string.quoted.double.rebol invalid.rebol invalid.illegal.rebol
 ;-- map!
-  #(a: 1 b: 2)
+  #[a: 1 b: 2]
 ; ^^ meta.mapping.rebol punctuation.section.mapping.begin.rebol
 ; ^ meta.mapping.rebol punctuation.section.mapping.begin.rebol storage.modifier.rebol
 ;   ^ meta.mapping.rebol entity.name.word.set.rebol
 ;            ^ meta.mapping.rebol punctuation.section.mapping.end.rebol
 
 ;-- Construction syntax
-#[true]
-#[false]
-#[none]
-#[unset!]
-#[logic! 0]
-#[string! "abc" 2]
-#[f32![1 2 3 4]]
-my-image: #[image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
+#(true)
+#(false)
+#(none)
+#(unset!)
+#(logic! 0)
+#(string! "abc" 2)
+#(f32![1 2 3 4])
+my-image: #(image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF})
 my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
 ;with comments inside:
-#[
+#(
   binary! ; type
   #{f00d} ; series
   2       ; index
-]
-  #[logic! 0]
+)
+  #(logic! 0)
 ; ^^^^^^^^^^^ meta.construct.rebol
 ; ^^ meta.construct.rebol punctuation.section.construct.begin.rebol
 ; ^ meta.construct.rebol punctuation.section.construct.begin.rebol storage.modifier.rebol
@@ -231,7 +231,7 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
 ;          ^ meta.construct.rebol constant.numeric.rebol
 ;           ^ meta.construct.rebol punctuation.section.construct.end.rebol
 
-  #[true]
+  #(true)
 
 ;----------------------------------------------------------------
 ;-- binary!                                                      

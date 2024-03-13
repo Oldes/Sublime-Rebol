@@ -249,27 +249,27 @@ string
 return halt
 
 ;-- Construction syntax
-#[true]
-#[false]
-#[none]
-#[unset!]
-#[logic! 0]
-#[string! "abc" 2]
-#[f32![1 2 3 4]]
-#[image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
+#(true)
+#(false)
+#(none)
+#(unset!)
+#(logic! 0)
+#(string! "abc" 2)
+#(f32![1 2 3 4])
+#(image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF})
 ;with comments inside:
-#[
+#(
 	binary! ; type
 	#{f00d} ; series
 	2       ; index
-]
+)
 
 ;-- map!
-#(  ; key/value container
+#[  ; key/value container
 	a: 1
 	b: 2
 	c: "foo"
-)
+]
 
 ;-- comments
 comment "something"

@@ -263,12 +263,12 @@ contexts:
         0: string.binary.prefix
         1: storage.modifier.rebol
       push: pop-binary-base16
-    - match: (?:(#)\()
+    - match: (?:(#)\[)
       captures:
         0: punctuation.section.mapping.begin.rebol
         1: storage.modifier.rebol
       push: pop-mapping
-    - match: (?:(#)\[(?![\]]))
+    - match: (?:(#)\((?![\)]))
       captures:
         0: punctuation.section.construct.begin.rebol
         1: storage.modifier.rebol
@@ -284,14 +284,14 @@ contexts:
 
   pop-construct:
     - meta_scope: meta.construct.rebol
-    - match: ']'
+    - match: ')'
       scope: punctuation.section.construct.end.rebol
       pop: true
     - include: main
 
   pop-mapping:
     - meta_scope: meta.mapping.rebol
-    - match: '\)'
+    - match: '\]'
       scope: punctuation.section.mapping.end.rebol
       pop: true
     - include: main
