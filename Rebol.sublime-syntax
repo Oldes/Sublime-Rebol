@@ -284,14 +284,14 @@ contexts:
 
   pop-construct:
     - meta_scope: meta.construct.rebol
-    - match: ')'
+    - match: '\)'
       scope: punctuation.section.construct.end.rebol
       pop: true
     - include: main
 
   pop-mapping:
     - meta_scope: meta.mapping.rebol
-    - match: '\]'
+    - match: ']'
       scope: punctuation.section.mapping.end.rebol
       pop: true
     - include: main
