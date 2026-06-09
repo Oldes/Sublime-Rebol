@@ -184,6 +184,7 @@ foo@gmail.com
 <----
 ---->
 <<->>
+if 1 < 2 [">"] ;; there is no tag on this line!
 
 ;-- url!
 http://user:pass@host:80/path?query#tag

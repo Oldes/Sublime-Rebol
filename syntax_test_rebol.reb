@@ -264,6 +264,12 @@ my-block:  [image! 2x2 #{FFFFFFFFFFFFFFFFFFFFFFFF}]
 
 <---> ;<-- this is word! in Red, not a tag!
 
+; `<` used as comparison operator should NOT be recognized as tag!
+  sA < sB
+;    ^ keyword.operator.comparison.rebol
+  sA < sB [print ["string ->"]]
+;    ^ keyword.operator.comparison.rebol
+
 ;----------------------------------------------------------------
 ;-- url!                                                         
 

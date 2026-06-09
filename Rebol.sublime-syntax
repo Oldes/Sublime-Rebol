@@ -171,7 +171,7 @@ contexts:
             - meta_scope: string.quoted.double.xml
             - match: '"'
               pop: true
-    - match: '<[^>]+>'
+    - match: '<\S[^>]*>'
       scope: entity.tag.rebol
 
   # Note: the email literal in Red is EXTREMELY permissive.
