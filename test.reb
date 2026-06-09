@@ -124,7 +124,22 @@ my-module: module [name: 'colors][]
 
 0x ;not valid pair!
 
-;-- hex number
+;-- integers (Rebol only!)
+;; Base 2
+21 = 2#010101
+2#1234   ;<- invalid!
+;; Base 8
+666 = 8#1232
+502 = 8#766
+;; Base 10
+123 = 10#123
+;; Base 16
+15 = 0#F
+66051 = 16#010203
+16#FFXYZ ;<- invalid!
+
+
+;-- hex number (Red lang only!)
 FFh
 0Ah
 01AAh

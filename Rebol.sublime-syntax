@@ -17,6 +17,8 @@ variables:
   ident: '[^{{non_ident_start_chars}}][^{{non_ident_chars}}]*'
   inf_or_nan: '(([+-])?1\.#(?i)(inf|nan))'
   float_or_int: '([+-])?\d+(?:(\.)\d+)?(?:([Ee][+-]?)\d+)?'
+  based_integer_valid: '(?:2#[01]+|8#[0-7]+|10#[0-9]+|(?:16|0)#[0-9A-Fa-f]+)(?![0-9A-Za-z#])'
+  based_integer_invalid: '\d+#[^\s\[\](){};]+'
   non_url_chars: '\s\[\]\(\){}";'
   non_email_chars: '{{non_url_chars}}:'
   months: (?i)(Jan(u(a(ry?)?)?)?|Feb(u(a(ry?)?)?)?|Mar(ch?)?|Apr(il?)?|May|June?|July?|Aug(u(st?)?)?|Sep(t(e(m(b(er?)?)?)?)?)?|Oct(o(b(er?)?)?)?|Nov(e(m(b(er?)?)?)?)?|Dec(e(m(b(er?)?)?)?)?)
@@ -72,6 +74,7 @@ contexts:
 
   match-number:
     - include: match-hex-integers
+    - include: match-based-integers
     - match: '{{inf_or_nan}}'
       scope: constant.numeric.rebol
       captures:
@@ -98,6 +101,14 @@ contexts:
       scope: constant.numeric.hex.rebol
       captures:
         2: storage.type.numeric.hex.rebol
+
+  match-based-integers:
+    - match: '{{based_integer_valid}}'
+      scope: constant.numeric.based.rebol
+      captures:
+        0: constant.numeric.based.rebol
+    - match: '{{based_integer_invalid}}'
+      scope: invalid.rebol
 
   match-time:
     #Note: Red and Rebol3 does not support am/pm part as Rebol2 did!
