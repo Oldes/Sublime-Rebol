@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>RSP Color Theme Test</title>
+    <style>
+        body { font-family: monospace; padding: 2em; }
+        table { border-collapse: collapse; width: 100%; }
+        td, th { border: 1px solid #ccc; padding: 0.4em 0.8em; text-align: left; }
+        th { background: #eee; }
+        .pass { color: green; }
+        .fail { color: red; }
+    </style>
+</head>
+<body>
+
+<h1>RSP Test Page</h1>
+
+<%
+    ;; helper: collect test results
+    results: copy []
+%>
+
+<table>
+<tr><th>Test</th><th>Expected</th><th>Got</th><th>Result</th></tr>
+
+<%
+    ;-- plain text (no RSP tags, just emitted as-is)
+    expected: "hello world"
+    got: "hello world"
+    append results reduce ["plain text" expected got expected = got]
+%>
+<tr>
+    <td>plain text</td>
+    <td>hello world</td>
+    <td>hello world</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>expression</td>
+    <td>value: 2</td>
+    <td>value: <%= 1 + 1 %></td>
+    <td><%= either (1 + 1) = 2 ["<span class='pass'>OK</span>"] ["<span class='fail'>FAIL</span>"] %></td>
+</tr>
+
+<%
+    x: 42
+%>
+<tr>
+    <td>statement</td>
+    <td>value: 42</td>
+    <td>value: <%=x%></td>
+    <td><%= either x = 42 ["<span class='pass'>OK</span>"] ["<span class='fail'>FAIL</span>"] %></td>
+</tr>
+
+<tr>
+    <td>if true</td>
+    <td>yes</td>
+    <td><%? on [%>yes<%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>if false</td>
+    <td>(empty)</td>
+    <td><%? off [%>yes<%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>if true with text</td>
+    <td>before yes after</td>
+    <td>before <%? on [%>yes<%]%> after</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>if false with text</td>
+    <td>before  after</td>
+    <td>before <%? off [%>yes<%]%> after</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>nested if true/true</td>
+    <td>yes</td>
+    <td><%? on [%><%? on [%>yes<%]%><%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>nested if true/false</td>
+    <td>yes</td>
+    <td><%? on [%><%? off [%>no<%]%>yes<%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>nested if false/true</td>
+    <td>after</td>
+    <td><%? off [%><%? on [%>no<%]%>no<%]%>after</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>nested if false/false</td>
+    <td>after</td>
+    <td><%? off [%><%? off [%>no<%]%>no<%]%>after</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>skip if false, content after</td>
+    <td> visible</td>
+    <td><%? off [%>no<%]%> visible</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>true branch, nested false</td>
+    <td>skip: content</td>
+    <td><%? on [%>skip:<%? off [%> invisible <%]%> content <%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>false branch, nested true (all skipped)</td>
+    <td>Off:  no content</td>
+    <td>Off: <%? off [%><%? on [%> content <%]%> visible <%]%> no content</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>if keyword syntax</td>
+    <td>yes</td>
+    <td><%? if on [%>yes<%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>expression condition</td>
+    <td>yes</td>
+    <td><%? 1 = 1 [%>yes<%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>multiple expressions</td>
+    <td>1 2 3</td>
+    <td><%=1%> <%=2%> <%=3%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>empty true block</td>
+    <td>after</td>
+    <td><%? on [%><%]%>after</td>
+    <td class="pass">OK</td>
+</tr>
+
+<tr>
+    <td>empty false block</td>
+    <td>after</td>
+    <td><%? off [%><%]%>after</td>
+    <td class="pass">OK</td>
+</tr>
+
+<%
+    ;-- with-else branch test
+    link-prev: ["Previous" "/page/1"]
+%>
+<tr>
+    <td>link with expression in attribute</td>
+    <td>&lt;a href="/page/1"&gt;Previous&lt;/a&gt;</td>
+    <td><%? link-prev [%><a href="<%= link-prev/2 %>"><%= link-prev/1 %></a><%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+<%
+    link-prev: false
+%>
+<tr>
+    <td>link-prev false (no output)</td>
+    <td>(empty)</td>
+    <td><%? link-prev [%><a href="<%= link-prev/2 %>"><%= link-prev/1 %></a><%]%></td>
+    <td class="pass">OK</td>
+</tr>
+
+</table>
+
+</body>
+</html>
