@@ -1,0 +1,134 @@
+%YAML 1.2
+---
+# Rebol Server Pages (.rsp)
+# HTML with embedded Rebol code in <% %> tags.
+#
+# Tag forms:
+#   <%  code  %>          execute Rebol code
+#   <%= expr  %>          output expression
+#   <%? cond [%> ... <%]%>             conditional (no else)
+#   <%? cond [%> ... <%][%> ... <%]%>  conditional with else branch
+#
+# All delimiters allow optional whitespace:
+#   [ %>, <% ], <% ] %>, <% ] [ %>
+name: Rebol Server Pages
+file_extensions: [rsp]
+scope: text.html.rsp
+version: 2
+extends: Packages/HTML/HTML.sublime-syntax
+
+variables:
+  close_tag:       '%>'
+  open_cond:       '<%\?'
+  open_html:       '\[\s*%>'          # [%>  or  [ %>
+  close_cond_all:  '<%\s*\]\s*%>'     # <%]%>  or  <% ] %>
+  close_cond_else: '<%\s*\]\s*\[\s*'  # <%][  or  <% ] [
+
+contexts:
+
+  # ------------------------------------------------------------------
+  # Inject RSP tag recognition into every HTML context
+  # ------------------------------------------------------------------
+  prototype:
+    - meta_prepend: true
+    - include: rsp-interpolations
+
+  # ------------------------------------------------------------------
+  # Lookahead so RSP tags are caught inside strings, attributes, etc.
+  # ------------------------------------------------------------------
+  rsp-interpolations:
+    - match: '(?=<%)'
+      push: rsp-interpolation-content
+
+  rsp-interpolation-content:
+    - clear_scopes: 1
+    - meta_include_prototype: false
+    - meta_scope: meta.interpolation.rsp
+    - include: rsp-embedded
+    - include: immediately-pop
+
+  # ------------------------------------------------------------------
+  # RSP tag dispatch
+  # ------------------------------------------------------------------
+  rsp-embedded:
+    # <%= expr %>
+    - match: '<%='
+      scope: meta.embedded.rsp punctuation.section.embedded.begin.expression.rsp
+      embed: scope:source.rebol
+      embed_scope: meta.embedded.expression.rebol.rsp
+      escape: '{{close_tag}}'
+      escape_captures:
+        0: meta.embedded.rsp punctuation.section.embedded.end.expression.rsp
+
+    # <%? condition [%> ... <%]%>
+    - match: '{{open_cond}}'
+      scope: meta.embedded.rsp punctuation.section.embedded.begin.conditional.rsp
+      push: rebol-cond-body
+
+    # <% code %>
+    - match: '<%'
+      scope: meta.embedded.rsp punctuation.section.embedded.begin.rsp
+      embed: scope:source.rebol
+      embed_scope: meta.embedded.rebol.rsp
+      escape: '{{close_tag}}'
+      escape_captures:
+        0: meta.embedded.rsp punctuation.section.embedded.end.rsp
+
+  # ------------------------------------------------------------------
+  # <%? condition [%> ...
+  # Rebol code until [%> (switch to HTML) or <%]%> (close empty block)
+  # ------------------------------------------------------------------
+  rebol-cond-body:
+    - meta_include_prototype: false
+    - meta_content_scope: meta.embedded.conditional.rebol.rsp
+
+    # empty block close: <%]%>
+    - match: '{{close_cond_all}}'
+      scope: meta.embedded.rsp punctuation.section.embedded.end.conditional.rsp
+      pop: true
+
+    # switch to HTML branch: [%>
+    - match: '{{open_html}}'
+      scope: meta.embedded.rsp punctuation.section.embedded.end.conditional.rsp
+      set: cond-html-body
+
+    - match: ''
+      push: scope:source.rebol
+      with_prototype:
+        - match: '(?={{open_html}}|{{close_cond_all}})'
+          pop: true
+
+  # ------------------------------------------------------------------
+  # HTML content inside <%? [%> ... <%]%>
+  # ------------------------------------------------------------------
+  cond-html-body:
+    - match: '{{close_cond_else}}'
+      scope: meta.embedded.rsp punctuation.section.embedded.begin.conditional.rsp
+      set: rebol-else-cond-body
+
+    - match: '{{close_cond_all}}'
+      scope: meta.embedded.rsp punctuation.section.embedded.end.conditional.rsp
+      pop: true
+    - include: rsp-embedded
+    - include: Packages/HTML/HTML.sublime-syntax
+      apply_prototype: true
+
+  # ------------------------------------------------------------------
+  # After <%][ , consume the closing %> then switch to else HTML
+  # ------------------------------------------------------------------
+  rebol-else-cond-body:
+    - meta_include_prototype: false
+    - match: '{{close_tag}}'
+      scope: meta.embedded.rsp punctuation.section.embedded.end.conditional.rsp
+      set: cond-else-html-body
+
+  # ------------------------------------------------------------------
+  # HTML content of the else branch
+  # ------------------------------------------------------------------
+  cond-else-html-body:
+    - match: '{{close_cond_all}}'
+      scope: meta.embedded.rsp punctuation.section.embedded.end.conditional.rsp
+      pop: true
+    - include: rsp-embedded
+    - include: Packages/HTML/HTML.sublime-syntax
+      apply_prototype: true
